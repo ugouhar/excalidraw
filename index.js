@@ -1,39 +1,54 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-let prevWidth = 0;
-let prevHeight = 0;
-let isDrawingEnabled = false;
-let isMousePositionForStartingCoordinates = true;
-let x_coord_start = 0;
-let y_coord_start = 0;
+
+const prevSize = {
+  width: 0,
+  height: 0,
+};
+
+const controls = {
+  isDrawingEnabled: false,
+  isMousePositionForStartingCoordinates: true,
+};
+
+const startCoord = {
+  x: 0,
+  y: 0,
+};
 
 function drawRectangle(event) {
-  if (!isDrawingEnabled) return;
-  if (isMousePositionForStartingCoordinates) {
-    x_coord_start = event.clientX;
-    y_coord_start = event.clientY;
-    isMousePositionForStartingCoordinates = false;
+  if (!controls.isDrawingEnabled) return;
+  if (controls.isMousePositionForStartingCoordinates) {
+    startCoord.x = event.clientX;
+    startCoord.y = event.clientY;
+    controls.isMousePositionForStartingCoordinates = false;
   }
 
-  ctx.clearRect(x_coord_start, y_coord_start, prevWidth, prevHeight);
+  ctx.clearRect(startCoord.x, startCoord.y, prevSize.width, prevSize.height);
   ctx.clearRect(
-    x_coord_start - 1,
-    y_coord_start - 1,
-    prevWidth + 2,
-    prevHeight + 2
+    startCoord.x - 1,
+    startCoord.y - 1,
+    prevSize.width + 2,
+    prevSize.height + 2
   );
 
   const rectangle = new Path2D();
-  const width = event.clientX - x_coord_start;
-  const height = event.clientY - y_coord_start;
-  rectangle.rect(x_coord_start, y_coord_start, width, height);
+  const width = event.clientX - startCoord.x;
+  const height = event.clientY - startCoord.y;
+  rectangle.rect(startCoord.x, startCoord.y, width, height);
   ctx.stroke(rectangle);
-  prevWidth = width;
-  prevHeight = height;
+  prevSize.width = width;
+  prevSize.height = height;
 }
-canvas.addEventListener("mousedown", () => (isDrawingEnabled = true));
-canvas.addEventListener("mouseup", () => {
-  isDrawingEnabled = false;
-  isMousePositionForStartingCoordinates = true;
-});
+
+const canvasMousedownHandler = () => {
+  controls.isDrawingEnabled = true;
+};
+const canvasMouseUpHandler = () => {
+  controls.isDrawingEnabled = false;
+  controls.isMousePositionForStartingCoordinates = true;
+};
+
+canvas.addEventListener("mousedown", canvasMousedownHandler);
+canvas.addEventListener("mouseup", canvasMouseUpHandler);
 canvas.addEventListener("mousemove", drawRectangle);
