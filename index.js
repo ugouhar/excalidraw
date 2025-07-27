@@ -1,53 +1,41 @@
+import { GlobalValues } from "./global.js";
+import { Rectangle } from "./shapes/rectangle.js";
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const prevSize = {
-  width: 0,
-  height: 0,
-};
-
-const controls = {
-  isDrawingEnabled: false,
-  isMousePositionForStartingCoordinates: true,
-};
-
-const startCoord = {
-  x: 0,
-  y: 0,
-};
-
-function drawRectangle(event) {
-  if (!controls.isDrawingEnabled) return;
-  if (controls.isMousePositionForStartingCoordinates) {
-    startCoord.x = event.clientX;
-    startCoord.y = event.clientY;
-    controls.isMousePositionForStartingCoordinates = false;
-  }
-
-  ctx.clearRect(startCoord.x, startCoord.y, prevSize.width, prevSize.height);
-  ctx.clearRect(
-    startCoord.x - 1,
-    startCoord.y - 1,
-    prevSize.width + 2,
-    prevSize.height + 2
+function computeCanvasPosition() {
+  const canvasComputedStyle = getComputedStyle(canvas);
+  GlobalValues.canvasPosition.x = parseInt(
+    canvasComputedStyle.left.replace("px", "")
   );
+  GlobalValues.canvasPosition.y = parseInt(
+    canvasComputedStyle.top.replace("px", "")
+  );
+}
 
-  const rectangle = new Path2D();
-  const width = event.clientX - startCoord.x;
-  const height = event.clientY - startCoord.y;
-  rectangle.rect(startCoord.x, startCoord.y, width, height);
-  ctx.stroke(rectangle);
-  prevSize.width = width;
-  prevSize.height = height;
+function onLoadHandler() {
+  computeCanvasPosition();
+}
+const rectangle = new Rectangle(canvas);
+function drawRectangle(event) {
+  if (!GlobalValues.controls.isDrawingEnabled) return;
+  rectangle.startDrawing(event);
+  rectangle.clearPrevRectangle();
+  rectangle.drawNewRectangle(event);
+  rectangle.endDrawing();
 }
 
 const canvasMousedownHandler = () => {
-  controls.isDrawingEnabled = true;
+  GlobalValues.controls.isDrawingEnabled = true;
 };
+
 const canvasMouseUpHandler = () => {
-  controls.isDrawingEnabled = false;
-  controls.isMousePositionForStartingCoordinates = true;
+  GlobalValues.controls.isDrawingEnabled = false;
+  GlobalValues.controls.isMousePositionForStartingCoordinates = true;
 };
+
+window.addEventListener("load", onLoadHandler);
 
 canvas.addEventListener("mousedown", canvasMousedownHandler);
 canvas.addEventListener("mouseup", canvasMouseUpHandler);
