@@ -39,6 +39,11 @@ export class Rectangle {
     return BOTTOM_RIGHT;
   }
 
+  resetPreviousSize() {
+    this.prevSize.width = 0;
+    this.prevSize.height = 0;
+  }
+
   clearPrevRectangle() {
     const direction = this.getDirection();
     console.log(direction);
