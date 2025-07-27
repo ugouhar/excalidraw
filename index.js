@@ -34,6 +34,7 @@ const canvasMouseUpHandler = () => {
   GlobalValues.controls.isDrawingEnabled = false;
   GlobalValues.controls.isMousePositionForStartingCoordinates = true;
   rectangle.resetPreviousSize();
+  rectangle.addRectangleToList(rectangle.getProperties());
 };
 
 window.addEventListener("load", onLoadHandler);

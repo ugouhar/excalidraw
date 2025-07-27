@@ -19,6 +19,7 @@ export class Rectangle {
       height: 0,
     };
     this.ctx = canvas.getContext("2d");
+    this.list = [];
   }
 
   startDrawing(event) {
@@ -32,11 +33,18 @@ export class Rectangle {
   getDirection() {
     const { width, height } = this.size;
     const { x, y } = this.startCoord;
-    console.log(width, height, x, y);
     if (width < 0 && height < 0) return TOP_LEFT;
     if (width > 0 && height < 0) return TOP_RIGHT;
     if (width < 0 && height > 0) return BOTTOM_LEFT;
     return BOTTOM_RIGHT;
+  }
+  getProperties() {
+    return {
+      x: this.startCoord.x,
+      y: this.startCoord.y,
+      width: this.size.width,
+      height: this.size.height,
+    };
   }
 
   resetPreviousSize() {
@@ -44,9 +52,13 @@ export class Rectangle {
     this.prevSize.height = 0;
   }
 
+  addRectangleToList(rect) {
+    this.list.push(rect);
+  }
+
   clearPrevRectangle() {
     const direction = this.getDirection();
-    console.log(direction);
+
     let deltaX = 0;
     let deltaY = 0;
     let deltaW = 0;
@@ -77,7 +89,6 @@ export class Rectangle {
         deltaH = +2;
         break;
     }
-    console.log(deltaW, deltaH);
     this.ctx.clearRect(
       this.startCoord.x + deltaX,
       this.startCoord.y + deltaY,
@@ -87,12 +98,12 @@ export class Rectangle {
   }
 
   drawNewRectangle(event) {
-    const rectangle = new Path2D();
-
     this.size.width =
       event.clientX - GlobalValues.canvasPosition.x - this.startCoord.x;
     this.size.height =
       event.clientY - GlobalValues.canvasPosition.y - this.startCoord.y;
+    const rectangle = new Path2D();
+    this.ctx.lineWidth = 2;
 
     rectangle.rect(
       this.startCoord.x,
@@ -100,8 +111,12 @@ export class Rectangle {
       this.size.width,
       this.size.height
     );
-    this.ctx.lineWidth = 2;
     this.ctx.stroke(rectangle);
+
+    this.list.forEach((rect) => {
+      rectangle.rect(rect.x, rect.y, rect.width, rect.height);
+      this.ctx.stroke(rectangle);
+    });
   }
 
   endDrawing() {
