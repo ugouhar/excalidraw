@@ -2,7 +2,6 @@ import { GlobalValues } from "./global.js";
 import { Rectangle } from "./shapes/rectangle.js";
 
 const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
 
 function computeCanvasPosition() {
   const canvasComputedStyle = getComputedStyle(canvas);
@@ -33,8 +32,8 @@ const canvasMousedownHandler = () => {
 const canvasMouseUpHandler = () => {
   GlobalValues.controls.isDrawingEnabled = false;
   GlobalValues.controls.isMousePositionForStartingCoordinates = true;
-  rectangle.resetPreviousSize();
-  rectangle.addRectangleToList(rectangle.getProperties());
+  rectangle.resetPreviousDimension();
+  rectangle.addShapeToList(rectangle.getProperties());
 };
 
 window.addEventListener("load", onLoadHandler);
