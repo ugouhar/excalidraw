@@ -2,7 +2,6 @@ import { RECTANGLE } from "./constants.js";
 
 const state = {
   controls: {
-    isDrawingEnabled: false,
     isMousePositionForStartingCoordinates: true,
   },
   canavas: {
@@ -19,9 +18,7 @@ export const store = {
   getControls: () => state.controls,
   getCanvasCoordinates: () => state.canavas.coordinates,
   getShapeSelectedToDraw: () => state.shapeSelectedToDraw,
-  setIsDrawingEnabled: (isEnabled) => {
-    state.controls.isDrawingEnabled = isEnabled;
-  },
+
   setIsMousePositionForStartingCoordinates: (
     isMousePositionForStartingCoordinates
   ) => {

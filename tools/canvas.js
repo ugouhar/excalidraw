@@ -4,15 +4,15 @@ import { store } from "../store.js";
 export class CanvasManager {
   constructor(canvas, rectangle) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
     this.rectangle = rectangle;
+    this.isDrawingEnabled = false;
     this.canvas.addEventListener("mousedown", this.onMouseDown);
     this.canvas.addEventListener("mouseup", this.onMouseUp);
     this.canvas.addEventListener("mousemove", this.drawShape);
   }
 
   drawShape = (event) => {
-    if (!store.getControls().isDrawingEnabled) return;
+    if (!this.isDrawingEnabled) return;
     switch (store.getShapeSelectedToDraw()) {
       case RECTANGLE:
         this.rectangle.draw(event);
@@ -34,11 +34,11 @@ export class CanvasManager {
   };
 
   onMouseDown = () => {
-    store.setIsDrawingEnabled(true);
+    this.isDrawingEnabled = true;
   };
 
   onMouseUp = () => {
-    store.setIsDrawingEnabled(false);
+    this.isDrawingEnabled = false;
     store.setIsMousePositionForStartingCoordinates(true);
     switch (store.getShapeSelectedToDraw()) {
       case RECTANGLE:
