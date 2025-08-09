@@ -24,14 +24,9 @@ export class CanvasManager {
   };
 
   computeCanvasPosition = () => {
-    const canvasComputedStyle = getComputedStyle(this.canvas);
-    const x_coordinate = parseInt(canvasComputedStyle.left.replace("px", ""));
-    const y_coordinate = parseInt(canvasComputedStyle.top.replace("px", ""));
-
-    store.setCanvasCoordinates({
-      x: x_coordinate,
-      y: y_coordinate,
-    });
+    const canvasComputedStyle = this.canvas.getBoundingClientRect();
+    const { x, y } = canvasComputedStyle;
+    store.setCanvasCoordinates({ x, y });
   };
 
   onMouseDown = () => {
