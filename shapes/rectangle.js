@@ -96,4 +96,11 @@ export class Rectangle extends Shape {
       this.ctx.stroke(rectangle);
     });
   }
+
+  draw(event) {
+    this.startDrawing(event);
+    this.clearPrevRectangle();
+    this.drawNewRectangle(event);
+    this.endDrawing();
+  }
 }

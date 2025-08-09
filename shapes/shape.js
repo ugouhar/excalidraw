@@ -19,6 +19,7 @@ export class Shape {
       store.setIsMousePositionForStartingCoordinates(false);
     }
   }
+
   endDrawing() {
     this.prevDimensions = { ...this.currDimensions };
   }
