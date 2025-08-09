@@ -6,6 +6,7 @@ export class CanvasManager {
     this.canvas = canvas;
     this.rectangle = rectangle;
     this.isDrawingEnabled = false;
+    this.shapeSelectedToDraw = RECTANGLE;
     this.canvas.addEventListener("mousedown", this.onMouseDown);
     this.canvas.addEventListener("mouseup", this.onMouseUp);
     this.canvas.addEventListener("mousemove", this.drawShape);
@@ -13,7 +14,7 @@ export class CanvasManager {
 
   drawShape = (event) => {
     if (!this.isDrawingEnabled) return;
-    switch (store.getShapeSelectedToDraw()) {
+    switch (this.shapeSelectedToDraw) {
       case RECTANGLE:
         this.rectangle.draw(event);
         break;
@@ -40,7 +41,7 @@ export class CanvasManager {
   onMouseUp = () => {
     this.isDrawingEnabled = false;
     store.setIsMousePositionForStartingCoordinates(true);
-    switch (store.getShapeSelectedToDraw()) {
+    switch (this.shapeSelectedToDraw) {
       case RECTANGLE:
         this.rectangle.resetPreviousDimension();
         this.rectangle.addShapeToList(this.rectangle.getProperties());

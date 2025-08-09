@@ -7,8 +7,20 @@ body {
 }
 #canvas {
   border: 1px solid #ccc;
-  position: absolute;
-  left: 50px;
-  top: 50px;
+  margin: 50px;
   cursor: crosshair;
+}
+
+#shape-tools{
+  border: 1px solid #ccc;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  margin: auto;
+}
+
+#shape-tools > button{
+  padding: 5px 10px;
+  cursor: pointer;
 }
