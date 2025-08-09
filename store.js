@@ -13,6 +13,8 @@ const state = {
 
 export const store = {
   getState: () => state,
+  getControls: () => state.controls,
+  getCanvasCoordinates: () => state.canavas.coordinates,
   setIsDrawingEnabled: (isEnabled) => {
     state.controls.isDrawingEnabled = isEnabled;
   },

@@ -20,7 +20,7 @@ const onLoadHandler = () => {
 
 const rectangle = new Rectangle(canvas);
 function drawRectangle(event) {
-  if (!store.getState().controls.isDrawingEnabled) return;
+  if (!store.getControls().isDrawingEnabled) return;
   rectangle.startDrawing(event);
   rectangle.clearPrevRectangle();
   rectangle.drawNewRectangle(event);

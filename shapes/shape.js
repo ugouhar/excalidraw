@@ -13,11 +13,9 @@ export class Shape {
   }
 
   startDrawing(event) {
-    if (store.getState().controls.isMousePositionForStartingCoordinates) {
-      this.startCoord.x =
-        event.clientX - store.getState().canavas.coordinates.x;
-      this.startCoord.y =
-        event.clientY - store.getState().canavas.coordinates.y;
+    if (store.getControls().isMousePositionForStartingCoordinates) {
+      this.startCoord.x = event.clientX - store.getCanvasCoordinates().x;
+      this.startCoord.y = event.clientY - store.getCanvasCoordinates().y;
       store.setIsMousePositionForStartingCoordinates(false);
     }
   }

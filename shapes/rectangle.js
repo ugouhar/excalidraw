@@ -77,13 +77,9 @@ export class Rectangle extends Shape {
 
   drawNewRectangle(event) {
     this.currDimensions.width =
-      event.clientX -
-      store.getState().canavas.coordinates.x -
-      this.startCoord.x;
+      event.clientX - store.getCanvasCoordinates().x - this.startCoord.x;
     this.currDimensions.height =
-      event.clientY -
-      store.getState().canavas.coordinates.y -
-      this.startCoord.y;
+      event.clientY - store.getCanvasCoordinates().y - this.startCoord.y;
     const rectangle = new Path2D();
     this.ctx.lineWidth = 2;
 
