@@ -1,4 +1,4 @@
-import { GlobalValues } from "../global.js";
+import { store } from "../store.js";
 import { Shape } from "./shape.js";
 const TOP_LEFT = "TOP_LEFT";
 const TOP_RIGHT = "TOP_RIGHT";
@@ -77,9 +77,13 @@ export class Rectangle extends Shape {
 
   drawNewRectangle(event) {
     this.currDimensions.width =
-      event.clientX - GlobalValues.canvasPosition.x - this.startCoord.x;
+      event.clientX -
+      store.getState().canavas.coordinates.x -
+      this.startCoord.x;
     this.currDimensions.height =
-      event.clientY - GlobalValues.canvasPosition.y - this.startCoord.y;
+      event.clientY -
+      store.getState().canavas.coordinates.y -
+      this.startCoord.y;
     const rectangle = new Path2D();
     this.ctx.lineWidth = 2;
 

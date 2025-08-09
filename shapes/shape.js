@@ -1,4 +1,4 @@
-import { GlobalValues } from "../global.js";
+import { store } from "../store.js";
 
 export class Shape {
   constructor(canvas) {
@@ -13,10 +13,12 @@ export class Shape {
   }
 
   startDrawing(event) {
-    if (GlobalValues.controls.isMousePositionForStartingCoordinates) {
-      this.startCoord.x = event.clientX - GlobalValues.canvasPosition.x;
-      this.startCoord.y = event.clientY - GlobalValues.canvasPosition.y;
-      GlobalValues.controls.isMousePositionForStartingCoordinates = false;
+    if (store.getState().controls.isMousePositionForStartingCoordinates) {
+      this.startCoord.x =
+        event.clientX - store.getState().canavas.coordinates.x;
+      this.startCoord.y =
+        event.clientY - store.getState().canavas.coordinates.y;
+      store.setIsMousePositionForStartingCoordinates(false);
     }
   }
   endDrawing() {
