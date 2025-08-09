@@ -1,9 +1,29 @@
 import { RECTANGLE } from "../constants.js";
 import { store } from "../store.js";
 
-export class Canvas {
-  computeCanvasPosition = (canvas) => {
-    const canvasComputedStyle = getComputedStyle(canvas);
+export class CanvasManager {
+  constructor(canvas, rectangle) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this.rectangle = rectangle;
+    this.canvas.addEventListener("mousedown", this.onMouseDown);
+    this.canvas.addEventListener("mouseup", this.onMouseUp);
+    this.canvas.addEventListener("mousemove", this.drawShape);
+  }
+
+  drawShape = (event) => {
+    if (!store.getControls().isDrawingEnabled) return;
+    switch (store.getShapeSelectedToDraw()) {
+      case RECTANGLE:
+        this.rectangle.draw(event);
+        break;
+      default:
+        console.log("Unknown shape");
+    }
+  };
+
+  computeCanvasPosition = () => {
+    const canvasComputedStyle = getComputedStyle(this.canvas);
     const x_coordinate = parseInt(canvasComputedStyle.left.replace("px", ""));
     const y_coordinate = parseInt(canvasComputedStyle.top.replace("px", ""));
 
@@ -13,17 +33,17 @@ export class Canvas {
     });
   };
 
-  canvasMousedownHandler = () => {
+  onMouseDown = () => {
     store.setIsDrawingEnabled(true);
   };
 
-  canvasMouseUpHandler = (currentShape) => {
+  onMouseUp = () => {
     store.setIsDrawingEnabled(false);
     store.setIsMousePositionForStartingCoordinates(true);
     switch (store.getShapeSelectedToDraw()) {
       case RECTANGLE:
-        currentShape.resetPreviousDimension();
-        currentShape.addShapeToList(currentShape.getProperties());
+        this.rectangle.resetPreviousDimension();
+        this.rectangle.addShapeToList(this.rectangle.getProperties());
         break;
       default:
         console.log("Unknown shape");
