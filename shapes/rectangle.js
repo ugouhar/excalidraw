@@ -10,11 +10,15 @@ export class Rectangle extends Shape {
     super(canvas);
 
     this.prevDimensions = {
+      x: 0,
+      y: 0,
       width: 0,
       height: 0,
     };
 
     this.currDimensions = {
+      x: 0,
+      y: 0,
       width: 0,
       height: 0,
     };
@@ -75,32 +79,28 @@ export class Rectangle extends Shape {
     );
   }
 
-  drawNewRectangle(event) {
+  draw(event) {
+    this.clearCanvas();
+    this.startDrawing(event);
+
+    this.currDimensions.x = this.startCoord.x;
+    this.currDimensions.y = this.startCoord.y;
     this.currDimensions.width =
       event.clientX - store.getCanvasCoordinates().x - this.startCoord.x;
     this.currDimensions.height =
       event.clientY - store.getCanvasCoordinates().y - this.startCoord.y;
-    const rectangle = new Path2D();
-    this.ctx.lineWidth = 2;
 
-    rectangle.rect(
-      this.startCoord.x,
-      this.startCoord.y,
-      this.currDimensions.width,
-      this.currDimensions.height
-    );
-    this.ctx.stroke(rectangle);
+    if (this.list.length > 0) this.list.pop();
+    this.list.push({ ...this.currDimensions });
 
     this.list.forEach((rect) => {
-      rectangle.rect(rect.x, rect.y, rect.width, rect.height);
-      this.ctx.stroke(rectangle);
+      const path = new Path2D();
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = "black";
+      path.rect(rect.x, rect.y, rect.width, rect.height);
+      this.ctx.stroke(path);
     });
-  }
-
-  draw(event) {
-    this.startDrawing(event);
-    this.clearPrevRectangle();
-    this.drawNewRectangle(event);
+    console.log(this.list);
     this.endDrawing();
   }
 }

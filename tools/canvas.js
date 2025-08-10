@@ -7,8 +7,8 @@ export class CanvasManager {
     this.rectangle = rectangle;
     this.circle = circle;
     this.isDrawingEnabled = false;
-    // this.shapeSelectedToDraw = RECTANGLE;
-    this.shapeSelectedToDraw = CIRCLE;
+    this.shapeSelectedToDraw = RECTANGLE;
+    // this.shapeSelectedToDraw = CIRCLE;
     this.canvas.addEventListener("mousedown", this.onMouseDown);
     this.canvas.addEventListener("mouseup", this.onMouseUp);
     this.canvas.addEventListener("mousemove", this.drawShape);
@@ -47,10 +47,7 @@ export class CanvasManager {
         this.rectangle.addShapeToList(this.rectangle.getProperties());
         break;
       case CIRCLE:
-        this.circle.resetPreviousDimension();
         this.circle.addShapeToList(this.circle.getProperties());
-        console.log("mouseup", this.circle.list);
-
         break;
       default:
         console.log("Unknown shape");

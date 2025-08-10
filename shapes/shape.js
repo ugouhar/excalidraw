@@ -25,6 +25,10 @@ export class Shape {
     this.prevDimensions = { ...this.currDimensions };
   }
 
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   getProperties() {
     return {
       x: this.startCoord.x,
