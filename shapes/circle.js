@@ -1,5 +1,6 @@
 import { store } from "../store.js";
 import { Shape } from "./shape.js";
+
 export class Circle extends Shape {
   constructor(canvas) {
     super(canvas);
@@ -23,9 +24,15 @@ export class Circle extends Shape {
     };
   }
 
-  draw(event) {
+  draw = (event) => {
     this.clearCanvas();
     this.startDrawing(event);
+
+    // update brush
+    // update dimension
+    // command manager
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "black";
 
     this.currDimensions.x = this.startCoord.x;
     this.currDimensions.y = this.startCoord.y;
@@ -35,17 +42,22 @@ export class Circle extends Shape {
     this.currDimensions.startAngle = 0;
     this.currDimensions.endAngle = 0;
 
-    if (this.list.length > 0) this.list.pop();
-    this.list.push({ ...this.currDimensions });
+    const path = new Path2D();
+    path.arc(
+      this.currDimensions.x,
+      this.currDimensions.y,
+      this.currDimensions.radius,
+      0,
+      2 * Math.PI
+    );
 
-    this.list.forEach((circle) => {
-      const path = new Path2D();
-      this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = "black";
-      path.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
-      this.ctx.stroke(path);
+    if (Shape.list.length > 0) Shape.list.pop();
+    Shape.list.push({
+      path,
+      dimensions: this.currDimensions,
     });
 
+    this.redrawAllShapes();
     this.endDrawing();
-  }
+  };
 }

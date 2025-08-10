@@ -1,4 +1,5 @@
 import { CIRCLE, RECTANGLE } from "../constants.js";
+import { Shape } from "../shapes/shape.js";
 import { store } from "../store.js";
 
 export class CanvasManager {
@@ -7,12 +8,13 @@ export class CanvasManager {
     this.rectangle = rectangle;
     this.circle = circle;
     this.isDrawingEnabled = false;
-    this.shapeSelectedToDraw = RECTANGLE;
-    // this.shapeSelectedToDraw = CIRCLE;
+    this.shapeSelectedToDraw = "";
     this.canvas.addEventListener("mousedown", this.onMouseDown);
     this.canvas.addEventListener("mouseup", this.onMouseUp);
     this.canvas.addEventListener("mousemove", this.drawShape);
   }
+
+  setShape = (shape) => (this.shapeSelectedToDraw = shape);
 
   drawShape = (event) => {
     if (!this.isDrawingEnabled) return;
@@ -41,16 +43,6 @@ export class CanvasManager {
   onMouseUp = () => {
     this.isDrawingEnabled = false;
     store.setIsMousePositionForStartingCoordinates(true);
-    switch (this.shapeSelectedToDraw) {
-      case RECTANGLE:
-        this.rectangle.resetPreviousDimension();
-        this.rectangle.addShapeToList(this.rectangle.getProperties());
-        break;
-      case CIRCLE:
-        this.circle.addShapeToList(this.circle.getProperties());
-        break;
-      default:
-        console.log("Unknown shape");
-    }
+    Shape.list.push({});
   };
 }

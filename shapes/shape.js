@@ -10,34 +10,34 @@ export class Shape {
     };
     this.currDimensions = {};
     this.ctx = canvas.getContext("2d");
-    this.list = [];
+    Shape.list = [];
   }
 
-  startDrawing(event) {
+  startDrawing = (event) => {
     if (store.getControls().isMousePositionForStartingCoordinates) {
       this.startCoord.x = event.clientX - store.getCanvasCoordinates().x;
       this.startCoord.y = event.clientY - store.getCanvasCoordinates().y;
       store.setIsMousePositionForStartingCoordinates(false);
     }
-  }
+  };
 
-  endDrawing() {
+  endDrawing = () => {
     this.prevDimensions = { ...this.currDimensions };
-  }
+  };
 
-  clearCanvas() {
+  clearCanvas = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
+  };
 
-  getProperties() {
+  redrawAllShapes = () => {
+    Shape.list.forEach((shape) => this.ctx.stroke(shape.path));
+  };
+
+  getProperties = () => {
     return {
       x: this.startCoord.x,
       y: this.startCoord.y,
       ...this.currDimensions,
     };
-  }
-
-  addShapeToList(shape) {
-    this.list.push(shape);
-  }
+  };
 }
