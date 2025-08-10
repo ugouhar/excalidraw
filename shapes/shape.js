@@ -2,6 +2,7 @@ import { store } from "../store.js";
 
 export class Shape {
   constructor(canvas) {
+    this.canvas = canvas;
     this.prevDimensions = {};
     this.startCoord = {
       x: 0,

@@ -1,2 +1,2 @@
 export const RECTANGLE = "RECTANGLE";
-export const CIRCEL = "CIRCLE";
+export const CIRCLE = "CIRCLE";

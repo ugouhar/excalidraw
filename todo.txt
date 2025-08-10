@@ -1,3 +1,0 @@
-[] Add command pattern for drawing with undo and redo optionAdd command pattern for drawing with undo and redo option
-
-[] Add circle
