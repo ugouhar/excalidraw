@@ -3,12 +3,11 @@ import { store } from "../store.js";
 export class Shape {
   constructor(canvas) {
     this.canvas = canvas;
-    this.prevDimensions = {};
     this.startCoord = {
       x: 0,
       y: 0,
     };
-    this.currDimensions = {};
+    this.dimensions = {};
     this.ctx = canvas.getContext("2d");
     Shape.list = [];
   }
@@ -19,10 +18,6 @@ export class Shape {
       this.startCoord.y = event.clientY - store.getCanvasCoordinates().y;
       store.setIsMousePositionForStartingCoordinates(false);
     }
-  };
-
-  endDrawing = () => {
-    this.prevDimensions = { ...this.currDimensions };
   };
 
   clearCanvas = () => {
@@ -37,7 +32,7 @@ export class Shape {
     return {
       x: this.startCoord.x,
       y: this.startCoord.y,
-      ...this.currDimensions,
+      ...this.dimensions,
     };
   };
 }
