@@ -11,7 +11,7 @@ export class Store {
       },
     };
     this.shapes = [];
-    this.shapeSelectedToDraw = "";
+    this.shapeSelectedToDraw = "RECTANGLE";
   }
   getState = () => ({
     controls: this.controls,

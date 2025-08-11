@@ -7,15 +7,16 @@ import { CIRCLE, RECTANGLE } from "./constants.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+ctx.lineWidth = "2";
 const store = new Store();
 const manager = new CommandManager();
+let startX, startY;
+let shapeBeingDrawn = null;
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   store.shapes.forEach((shape) => shape.draw(ctx));
 }
-
-let startX, startY;
 
 const computeCanvasPosition = () => {
   const canvasComputedStyle = canvas.getBoundingClientRect();
@@ -41,29 +42,27 @@ canvas.addEventListener("mousemove", (event) => {
     case RECTANGLE: {
       const width = event.clientX - store.getCanvasCoordinates().x - startX;
       const height = event.clientY - store.getCanvasCoordinates().y - startY;
-      manager.executeCommand(
-        new AddShapeCommand(store, new Rectangle(startX, startY, width, height))
-      );
+      shapeBeingDrawn = new Rectangle(startX, startY, width, height);
       break;
     }
     case CIRCLE: {
       const radius = Math.abs(
         event.clientX - store.getCanvasCoordinates().x - startX
       );
-      manager.executeCommand(
-        new AddShapeCommand(store, new Circle(startX, startY, radius))
-      );
+      shapeBeingDrawn = new Circle(startX, startY, radius);
       break;
     }
     default:
       console.log("Unknown shape");
   }
   draw();
+  shapeBeingDrawn.draw(ctx);
 });
 
 canvas.addEventListener("mouseup", () => {
   store.setIsMousePositionForStartingCoordinates(true);
   store.setIsDrawing(false);
+  manager.executeCommand(new AddShapeCommand(store, shapeBeingDrawn));
 });
 
 document
