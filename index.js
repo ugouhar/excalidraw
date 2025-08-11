@@ -86,3 +86,8 @@ document.getElementById("btn-undo").addEventListener("click", () => {
   manager.undo();
   draw();
 });
+
+document.getElementById("btn-redo").addEventListener("click", () => {
+  manager.redo();
+  draw();
+});

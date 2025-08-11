@@ -8,8 +8,6 @@ export class AddShapeCommand {
   }
 
   undo() {
-    this.store.shapes = this.store.shapes.filter(
-      (shape) => shape.id !== this.shape.id
-    );
+    this.store.shapes.pop();
   }
 }
