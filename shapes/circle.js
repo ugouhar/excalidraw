@@ -1,52 +1,31 @@
-import { store } from "../store.js";
-import { Shape } from "./shape.js";
-
-export class Circle extends Shape {
-  constructor(canvas) {
-    super(canvas);
-
-    this.dimensions = {
-      x: 0,
-      y: 0,
-      radius: 0,
-      startAngle: 0,
-      endAngle: 0,
-      counterclockwise: false,
-    };
+export class Circle {
+  static count = 0;
+  constructor(x, y, radius) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.id = `circle${Circle.count++}`;
   }
 
-  draw = (event) => {
-    this.clearCanvas();
-    this.startDrawing(event);
-
-    // update brush
-    // update dimension
-    // command manager
-    // undo redo
-
-    this.dimensions.x = this.startCoord.x;
-    this.dimensions.y = this.startCoord.y;
-    this.dimensions.radius = Math.abs(
-      event.clientX - store.getCanvasCoordinates().x - this.startCoord.x
-    );
-    this.dimensions.startAngle = 0;
-    this.dimensions.endAngle = 0;
-
+  draw(ctx) {
     const path = new Path2D();
-    path.arc(
-      this.dimensions.x,
-      this.dimensions.y,
-      this.dimensions.radius,
-      0,
-      2 * Math.PI
+    path.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    ctx.stroke(path);
+  }
+}
+
+export class AddCircleCommand {
+  constructor(store, circle) {
+    this.store = store;
+    this.circle = circle;
+  }
+  execute() {
+    this.store.shapes.push(this.circle);
+  }
+
+  undo() {
+    this.store.shapes = this.store.shapes.filter(
+      (shape) => shape.id !== this.circle.id
     );
-
-    if (Shape.list.length > 0) Shape.list.pop();
-    Shape.list.push({
-      path,
-      dimensions: this.dimensions,
-    });
-
-    this.redrawAllShapes();
-  };
+  }
 }

@@ -1,6 +1,3 @@
-// import { store } from "../store.js";
-// import { Shape } from "./shape.js";
-
 export class Rectangle {
   static count = 0;
   constructor(x, y, w, h) {
@@ -16,42 +13,6 @@ export class Rectangle {
     path.rect(this.x, this.y, this.w, this.h);
     ctx.stroke(path);
   }
-
-  // startDrawing = (event) => {
-  //   if (store.getControls().isMousePositionForStartingCoordinates) {
-  //     this.startCoord.x = event.clientX - store.getCanvasCoordinates().x;
-  //     this.startCoord.y = event.clientY - store.getCanvasCoordinates().y;
-  //     store.setIsMousePositionForStartingCoordinates(false);
-  //   }
-  // };
-
-  // draw2 = (event) => {
-  //   // this.clearCanvas();
-  //   this.startDrawing(event);
-
-  //   this.dimensions.x = this.startCoord.x;
-  //   this.dimensions.y = this.startCoord.y;
-  //   this.dimensions.width =
-  //     event.clientX - store.getCanvasCoordinates().x - this.startCoord.x;
-  //   this.dimensions.height =
-  //     event.clientY - store.getCanvasCoordinates().y - this.startCoord.y;
-
-  //   const path = new Path2D();
-  //   path.rect(
-  //     this.dimensions.x,
-  //     this.dimensions.y,
-  //     this.dimensions.width,
-  //     this.dimensions.height
-  //   );
-
-  // if (Shape.list.length > 0) Shape.list.pop();
-  // Shape.list.push({
-  //   path,
-  //   dimensions: this.dimensions,
-  // });
-
-  // this.redrawAllShapes();
-  // };
 }
 
 export class AddRectangleCommand {

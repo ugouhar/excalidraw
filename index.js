@@ -1,5 +1,4 @@
-// import { CIRCLE, RECTANGLE } from "./constants.js";
-// import { Circle } from "./shapes/circle.js";
+import { AddCircleCommand, Circle } from "./shapes/circle.js";
 import { CommandManager } from "./shapes/command-manager.js";
 import { AddRectangleCommand, Rectangle } from "./shapes/rectangle.js";
 import { Store } from "./store.js";
@@ -14,9 +13,6 @@ function draw() {
   store.shapes.forEach((shape) => shape.draw(ctx));
 }
 
-// const rectangle = new Rectangle(canvas);
-// const circle = new Circle(canvas);
-// const canvasManager = new CanvasManager(canvas, rectangle, circle);
 let startX, startY;
 
 const computeCanvasPosition = () => {
@@ -38,10 +34,16 @@ canvas.addEventListener("mousedown", (event) => {
 
 canvas.addEventListener("mousemove", (event) => {
   if (!store.getControls().isDrawing) return;
-  const width = event.clientX - store.getCanvasCoordinates().x - startX;
-  const height = event.clientY - store.getCanvasCoordinates().y - startY;
+  // const width = event.clientX - store.getCanvasCoordinates().x - startX;
+  // const height = event.clientY - store.getCanvasCoordinates().y - startY;
+  // manager.executeCommand(
+  //   new AddRectangleCommand(store, new Rectangle(startX, startY, width, height))
+  // );
+  const radius = Math.abs(
+    event.clientX - store.getCanvasCoordinates().x - startX
+  );
   manager.executeCommand(
-    new AddRectangleCommand(store, new Rectangle(startX, startY, width, height))
+    new AddCircleCommand(store, new Circle(startX, startY, radius))
   );
   draw();
 });
@@ -50,11 +52,6 @@ canvas.addEventListener("mouseup", () => {
 
   store.setIsDrawing(false);
 });
-
-// document.getElementById("btn-rectangle").addEventListener("click", draw);
-// document
-//   .getElementById("btn-circle")
-//   .addEventListener("click", () => canvasManager.setShape(CIRCLE));
 
 document.getElementById("btn-undo").addEventListener("click", () => {
   manager.undo();
