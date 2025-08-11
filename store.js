@@ -30,3 +30,5 @@ export class Store {
   };
   setShapeSelectedToDraw = (newShape) => (this.shapeSelectedToDraw = newShape);
 }
+
+export const store = new Store();
