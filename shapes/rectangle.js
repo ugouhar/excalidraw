@@ -23,8 +23,6 @@ export class Rectangle extends Shape {
   draw = (event) => {
     this.clearCanvas();
     this.startDrawing(event);
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = "black";
 
     this.currDimensions.x = this.startCoord.x;
     this.currDimensions.y = this.startCoord.y;

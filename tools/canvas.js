@@ -5,16 +5,24 @@ import { store } from "../store.js";
 export class CanvasManager {
   constructor(canvas, rectangle, circle) {
     this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = "black";
     this.rectangle = rectangle;
     this.circle = circle;
     this.isDrawingEnabled = false;
-    this.shapeSelectedToDraw = "";
+    this.shapeSelectedToDraw = RECTANGLE;
     this.canvas.addEventListener("mousedown", this.onMouseDown);
     this.canvas.addEventListener("mouseup", this.onMouseUp);
     this.canvas.addEventListener("mousemove", this.drawShape);
   }
 
   setShape = (shape) => (this.shapeSelectedToDraw = shape);
+
+  updateBrush = (lineWidth = 2, strokeColor = "black") => {
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeStyle = strokeColor;
+  };
 
   drawShape = (event) => {
     if (!this.isDrawingEnabled) return;

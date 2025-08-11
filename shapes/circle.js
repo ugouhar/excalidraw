@@ -31,8 +31,7 @@ export class Circle extends Shape {
     // update brush
     // update dimension
     // command manager
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = "black";
+    // undo redo
 
     this.currDimensions.x = this.startCoord.x;
     this.currDimensions.y = this.startCoord.y;
