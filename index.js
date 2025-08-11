@@ -1,7 +1,9 @@
-import { AddCircleCommand, Circle } from "./shapes/circle.js";
-import { CommandManager } from "./shapes/command-manager.js";
-import { AddRectangleCommand, Rectangle } from "./shapes/rectangle.js";
+import { AddShapeCommand } from "./commands/add-shape.js";
+import { Circle } from "./shapes/circle.js";
+import { CommandManager } from "./commands/command-manager.js";
+import { Rectangle } from "./shapes/rectangle.js";
 import { Store } from "./store.js";
+import { CIRCLE, RECTANGLE } from "./constants.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -34,24 +36,42 @@ canvas.addEventListener("mousedown", (event) => {
 
 canvas.addEventListener("mousemove", (event) => {
   if (!store.getControls().isDrawing) return;
-  // const width = event.clientX - store.getCanvasCoordinates().x - startX;
-  // const height = event.clientY - store.getCanvasCoordinates().y - startY;
-  // manager.executeCommand(
-  //   new AddRectangleCommand(store, new Rectangle(startX, startY, width, height))
-  // );
-  const radius = Math.abs(
-    event.clientX - store.getCanvasCoordinates().x - startX
-  );
-  manager.executeCommand(
-    new AddCircleCommand(store, new Circle(startX, startY, radius))
-  );
+
+  switch (store.shapeSelectedToDraw) {
+    case RECTANGLE: {
+      const width = event.clientX - store.getCanvasCoordinates().x - startX;
+      const height = event.clientY - store.getCanvasCoordinates().y - startY;
+      manager.executeCommand(
+        new AddShapeCommand(store, new Rectangle(startX, startY, width, height))
+      );
+      break;
+    }
+    case CIRCLE: {
+      const radius = Math.abs(
+        event.clientX - store.getCanvasCoordinates().x - startX
+      );
+      manager.executeCommand(
+        new AddShapeCommand(store, new Circle(startX, startY, radius))
+      );
+      break;
+    }
+    default:
+      console.log("Unknown shape");
+  }
   draw();
 });
+
 canvas.addEventListener("mouseup", () => {
   store.setIsMousePositionForStartingCoordinates(true);
-
   store.setIsDrawing(false);
 });
+
+document
+  .getElementById("btn-rectangle")
+  .addEventListener("click", () => store.setShapeSelectedToDraw(RECTANGLE));
+document
+  .getElementById("btn-circle")
+  .addEventListener("click", () => store.setShapeSelectedToDraw(CIRCLE));
 
 document.getElementById("btn-undo").addEventListener("click", () => {
   manager.undo();

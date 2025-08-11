@@ -11,6 +11,7 @@ export class Store {
       },
     };
     this.shapes = [];
+    this.shapeSelectedToDraw = "";
   }
   getState = () => ({
     controls: this.controls,
@@ -27,4 +28,5 @@ export class Store {
   setCanvasCoordinates = (newCoordinates) => {
     this.canavas.coordinates = { ...newCoordinates };
   };
+  setShapeSelectedToDraw = (newShape) => (this.shapeSelectedToDraw = newShape);
 }

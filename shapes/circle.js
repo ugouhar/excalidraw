@@ -13,19 +13,3 @@ export class Circle {
     ctx.stroke(path);
   }
 }
-
-export class AddCircleCommand {
-  constructor(store, circle) {
-    this.store = store;
-    this.circle = circle;
-  }
-  execute() {
-    this.store.shapes.push(this.circle);
-  }
-
-  undo() {
-    this.store.shapes = this.store.shapes.filter(
-      (shape) => shape.id !== this.circle.id
-    );
-  }
-}

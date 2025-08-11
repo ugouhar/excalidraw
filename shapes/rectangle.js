@@ -14,20 +14,3 @@ export class Rectangle {
     ctx.stroke(path);
   }
 }
-
-export class AddRectangleCommand {
-  constructor(store, rectangle) {
-    this.store = store;
-    this.rectangle = rectangle;
-  }
-
-  execute() {
-    this.store.shapes.push(this.rectangle);
-  }
-
-  undo() {
-    this.store.shapes = this.store.shapes.filter(
-      (shape) => shape.id !== this.rectangle.id
-    );
-  }
-}
