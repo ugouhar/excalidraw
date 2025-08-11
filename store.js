@@ -1,27 +1,30 @@
-const state = {
-  controls: {
-    isMousePositionForStartingCoordinates: true,
-  },
-  canavas: {
-    coordinates: {
-      x: 0,
-      y: 0,
-    },
-  },
-};
+export class Store {
+  constructor() {
+    this.controls = {
+      isMousePositionForStartingCoordinates: true,
+      isDrawing: false,
+    };
+    this.canavas = {
+      coordinates: {
+        x: 0,
+        y: 0,
+      },
+    };
+    this.shapes = [];
+  }
+  getState = () => ({
+    controls: this.controls,
+    canvas: this.canavas,
+    shapes: this.shapes,
+  });
+  getControls = () => this.controls;
+  getCanvasCoordinates = () => this.canavas.coordinates;
 
-export const store = {
-  getState: () => state,
-  getControls: () => state.controls,
-  getCanvasCoordinates: () => state.canavas.coordinates,
-
-  setIsMousePositionForStartingCoordinates: (
-    isMousePositionForStartingCoordinates
-  ) => {
-    state.controls.isMousePositionForStartingCoordinates =
-      isMousePositionForStartingCoordinates;
-  },
-  setCanvasCoordinates: (newCoordinates) => {
-    state.canavas.coordinates = { ...newCoordinates };
-  },
-};
+  setIsMousePositionForStartingCoordinates = (value) => {
+    this.controls.isMousePositionForStartingCoordinates = value;
+  };
+  setIsDrawing = (isDrawing) => (this.controls.isDrawing = isDrawing);
+  setCanvasCoordinates = (newCoordinates) => {
+    this.canavas.coordinates = { ...newCoordinates };
+  };
+}
