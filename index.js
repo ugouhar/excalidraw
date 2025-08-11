@@ -3,7 +3,8 @@ import { Circle } from "./shapes/circle.js";
 import { CommandManager } from "./commands/command-manager.js";
 import { Rectangle } from "./shapes/rectangle.js";
 import { Store } from "./store.js";
-import { CIRCLE, RECTANGLE } from "./constants.js";
+import { CIRCLE, LINE, RECTANGLE } from "./constants.js";
+import { Line } from "./shapes/line.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -52,11 +53,17 @@ canvas.addEventListener("mousemove", (event) => {
       shapeBeingDrawn = new Circle(startX, startY, radius);
       break;
     }
+    case LINE: {
+      const x2 = event.clientX - store.getCanvasCoordinates().x;
+      const y2 = event.clientY - store.getCanvasCoordinates().y;
+      shapeBeingDrawn = new Line(startX, startY, x2, y2);
+      break;
+    }
     default:
       console.log("Unknown shape");
   }
   draw();
-  shapeBeingDrawn.draw(ctx);
+  if (shapeBeingDrawn) shapeBeingDrawn.draw(ctx);
 });
 
 canvas.addEventListener("mouseup", () => {
@@ -71,6 +78,9 @@ document
 document
   .getElementById("btn-circle")
   .addEventListener("click", () => store.setShapeSelectedToDraw(CIRCLE));
+document
+  .getElementById("btn-line")
+  .addEventListener("click", () => store.setShapeSelectedToDraw(LINE));
 
 document.getElementById("btn-undo").addEventListener("click", () => {
   manager.undo();
