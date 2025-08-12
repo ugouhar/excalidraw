@@ -10,7 +10,7 @@ export class Store {
         x: 0,
         y: 0,
       },
-      brushSize: 50,
+      brushSize: 2,
     };
     this.shapes = [];
     this.shapeSelectedToDraw = "RECTANGLE";
