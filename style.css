@@ -15,6 +15,10 @@ body {
   cursor: crosshair
 }
 
+#canvas.cursor-move {
+  cursor: move;
+}
+
 #shape-tools{
   border: 1px solid #ccc;
   padding: 1rem;
