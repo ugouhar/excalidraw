@@ -8,7 +8,7 @@ import {
   drawLine,
   drawRectangle,
 } from "./shapes/draw.js";
-import { insideRectangle } from "./utils/utils.js";
+import { insideCircle, insideRectangle } from "./utils/utils.js";
 
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
@@ -94,7 +94,9 @@ const handleCanvasClicked = (event) => {
         }
         break;
       case "Circle":
-        console.log("checking inside circle");
+        if (insideCircle(allShapes[i], x, y)) {
+          console.log("inside circle");
+        }
         break;
       default:
         console.log("Unknown shape in list");
