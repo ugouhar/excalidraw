@@ -3,12 +3,14 @@ export class Store {
     this.controls = {
       isMousePositionForStartingCoordinates: true,
       isDrawing: false,
+      isMovingShape: false,
     };
     this.canavas = {
       coordinates: {
         x: 0,
         y: 0,
       },
+      brushSize: 50,
     };
     this.shapes = [];
     this.shapeSelectedToDraw = "RECTANGLE";
@@ -20,11 +22,13 @@ export class Store {
   });
   getControls = () => this.controls;
   getCanvasCoordinates = () => this.canavas.coordinates;
+  getBrushSize = () => this.canavas.brushSize;
 
   setIsMousePositionForStartingCoordinates = (value) => {
     this.controls.isMousePositionForStartingCoordinates = value;
   };
   setIsDrawing = (isDrawing) => (this.controls.isDrawing = isDrawing);
+  setIsMovingShape = (isMoving) => (this.controls.isMovingShape = isMoving);
   setCanvasCoordinates = (newCoordinates) => {
     this.canavas.coordinates = { ...newCoordinates };
   };

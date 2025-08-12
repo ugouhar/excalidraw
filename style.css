@@ -8,7 +8,11 @@ body {
 #canvas {
   border: 1px solid #ccc;
   margin: 50px;
-  cursor: crosshair;
+  cursor: default;
+}
+
+#canvas.canvas-drawing{
+  cursor: crosshair
 }
 
 #shape-tools{
