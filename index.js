@@ -9,7 +9,6 @@ import {
   drawRectangle,
 } from "./shapes/draw.js";
 import { insideCircle, insideRectangle } from "./utils/utils.js";
-import { MoveShapeCommand } from "./commands/move-shape.js";
 
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
@@ -28,15 +27,6 @@ const computeCanvasPosition = () => {
   const { x, y } = canvasComputedStyle;
   store.setCanvasCoordinates({ x, y });
 };
-
-const beginSelecting = (event) => {};
-
-const selecting = (event) => {};
-const endSelecting = (event) => {};
-
-const beginMoving = (event) => {};
-const moving = (event) => {};
-const endMoving = (event) => {};
 
 const beginDrawing = (event) => {
   store.setIsDrawing(true);
@@ -134,7 +124,10 @@ const handleCanvasMouseDown = (event) => {
 };
 
 const handleCanvasMouseMove = (event) => {
-  if (store.getTools().isDrawingToolEnabled) drawing(event);
+  if (store.getTools().isDrawingToolEnabled) {
+    drawing(event);
+    return;
+  }
 
   const allShapes = store.shapes;
   const x = event.clientX - store.getCanvasCoordinates().x;
@@ -171,10 +164,6 @@ const handleCanvasMouseMove = (event) => {
 
 // Event listeners
 window.addEventListener("load", computeCanvasPosition);
-
-canvas.addEventListener("click", (event) => {
-  // handleCanvasClicked(event);
-});
 
 canvas.addEventListener("mousedown", (event) => {
   // if (store.getTools().isSelectToolEnabled) beginSelecting(event);
