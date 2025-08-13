@@ -21,7 +21,6 @@ import {
   insideRectangle,
 } from "./utils/utils.js";
 
-let isMouseDown = false;
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
 const ctx = canvas.getContext("2d");
@@ -120,18 +119,19 @@ const handleCanvasMouseDown = (event) => {
 };
 
 const handleCanvasMouseMove = (event) => {
-  if (store.getTools().isDrawingToolEnabled) {
-    if (isMouseDown) drawing(event);
-    return;
+  if (store.getControls().isMouseDown && store.getTools().isDrawingToolEnabled)
+    drawing(event);
+
+  if (store.getControls().isMouseDown && store.getTools().isMoveToolEnabled)
+    moveShape(event);
+
+  if (!store.getTools().isDrawingToolEnabled && getShapeBelowCursor(event)) {
+    store.setIsMoveToolEnabled(true);
+    canvas.classList.add("cursor-move");
+  } else {
+    store.setIsMoveToolEnabled(false);
+    canvas.classList.remove("cursor-move");
   }
-
-  if (getShapeBelowCursor(event)) store.setIsMoveToolEnabled(true);
-  else store.setIsMoveToolEnabled(false);
-
-  if (store.getTools().isMoveToolEnabled) canvas.classList.add("cursor-move");
-  else canvas.classList.remove("cursor-move");
-
-  if (isMouseDown && store.getTools().isMoveToolEnabled) moveShape(event);
 };
 
 // Event listeners
@@ -139,7 +139,7 @@ window.addEventListener("load", computeCanvasPosition);
 
 // MOUSE DOWN
 canvas.addEventListener("mousedown", (event) => {
-  isMouseDown = true;
+  store.setIsMouseDown(true);
   if (store.getTools().isDrawingToolEnabled) beginDrawing(event);
   if (!store.getTools().isDrawingToolEnabled) handleCanvasMouseDown(event);
 });
@@ -151,7 +151,7 @@ canvas.addEventListener("mousemove", (event) => {
 
 // MOUSE UP
 canvas.addEventListener("mouseup", (event) => {
-  isMouseDown = false;
+  store.setIsMouseDown(false);
   if (store.getTools().isDrawingToolEnabled) endDrawing(event);
   if (store.getTools().isMoveToolEnabled) store.setIsMoveToolEnabled(false);
 });

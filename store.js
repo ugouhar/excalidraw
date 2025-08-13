@@ -7,6 +7,7 @@ export class Store {
     };
     this.controls = {
       isCursorAtDrawingStartPoint: true,
+      isMouseDown: false,
     };
     this.canavas = {
       coordinates: {
@@ -40,6 +41,7 @@ export class Store {
   setIsCursorAtDrawingStartPoint = (value) => {
     this.controls.isCursorAtDrawingStartPoint = value;
   };
+  setIsMouseDown = (isMouseDown) => (this.controls.isMouseDown = isMouseDown);
   setCanvasCoordinates = (newCoordinates) => {
     this.canavas.coordinates = { ...newCoordinates };
   };
