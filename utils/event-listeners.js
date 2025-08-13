@@ -42,25 +42,25 @@ const switchActiveTool = (canvas, toolName) => {
 };
 
 export const registerToolsEvents = (canvas, undo, redo) => {
-  document.getElementById("btn-select").addEventListener("click", () => {
+  document.getElementById("select-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "select-tool");
   });
 
-  document.getElementById("btn-rectangle").addEventListener("click", () => {
+  document.getElementById("rectangle-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool");
     store.setShapeSelectedToDraw(RECTANGLE);
   });
 
-  document.getElementById("btn-circle").addEventListener("click", () => {
+  document.getElementById("circle-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool");
     store.setShapeSelectedToDraw(CIRCLE);
   });
 
-  document.getElementById("btn-line").addEventListener("click", () => {
+  document.getElementById("line-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool");
     store.setShapeSelectedToDraw(LINE);
   });
 
-  document.getElementById("btn-undo").addEventListener("click", undo);
-  document.getElementById("btn-redo").addEventListener("click", redo);
+  document.getElementById("undo-tool").addEventListener("click", undo);
+  document.getElementById("redo-tool").addEventListener("click", redo);
 };
