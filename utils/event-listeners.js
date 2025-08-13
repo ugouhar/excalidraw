@@ -1,4 +1,4 @@
-import { drawingTools } from "../constants.js";
+import { CIRCLE, LINE, RECTANGLE } from "../constants.js";
 import { store } from "../store.js";
 
 export const registerPageLoadEvent = (computeCanvasPosition) => {
@@ -32,22 +32,33 @@ export const registerCanvasEvents = (
   });
 };
 
+const switchActiveTool = (canvas, toolName) => {
+  store.setIsSelectToolEnabled(toolName === "select-tool");
+  store.setIsMoveToolEnabled(toolName === "move-tool");
+  store.setIsDrawingToolEnabled(toolName === "drawing-tool");
+
+  if (toolName === "drawing-tool") canvas.classList.add("canvas-drawing");
+  else canvas.classList.remove("canvas-drawing");
+};
+
 export const registerToolsEvents = (canvas, undo, redo) => {
   document.getElementById("btn-select").addEventListener("click", () => {
-    canvas.classList.remove("canvas-drawing");
-    store.setIsSelectToolEnabled(true);
-    store.setIsMoveToolEnabled(false);
-    store.setIsDrawingToolEnabled(false);
+    switchActiveTool(canvas, "select-tool");
   });
 
-  drawingTools.forEach((tool) => {
-    document.getElementById(tool.id).addEventListener("click", () => {
-      store.setIsSelectToolEnabled(false);
-      store.setIsMoveToolEnabled(false);
-      store.setIsDrawingToolEnabled(true);
-      store.setShapeSelectedToDraw(tool.shape);
-      canvas.classList.add("canvas-drawing");
-    });
+  document.getElementById("btn-rectangle").addEventListener("click", () => {
+    switchActiveTool(canvas, "drawing-tool");
+    store.setShapeSelectedToDraw(RECTANGLE);
+  });
+
+  document.getElementById("btn-circle").addEventListener("click", () => {
+    switchActiveTool(canvas, "drawing-tool");
+    store.setShapeSelectedToDraw(CIRCLE);
+  });
+
+  document.getElementById("btn-line").addEventListener("click", () => {
+    switchActiveTool(canvas, "drawing-tool");
+    store.setShapeSelectedToDraw(LINE);
   });
 
   document.getElementById("btn-undo").addEventListener("click", undo);
