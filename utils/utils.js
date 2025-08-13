@@ -20,3 +20,9 @@ export const insideCircle = (circle, x, y) => {
   const distanceFromCenter = calculateDistance(circle.x, circle.y, x, y);
   return distanceFromCenter <= circle.radius + delta;
 };
+
+export const getCanvasCursorCoordinates = (event) => {
+  const x = event.clientX - store.getCanvasCoordinates().x;
+  const y = event.clientY - store.getCanvasCoordinates().y;
+  return { x, y };
+};

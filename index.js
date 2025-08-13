@@ -1,21 +1,35 @@
 import { AddShapeCommand } from "./commands/add-shape.js";
 import { CommandManager } from "./commands/command-manager.js";
 import { store } from "./store.js";
-import { CIRCLE, drawingTools, LINE, RECTANGLE } from "./constants.js";
 import {
-  computeStartingCoordinates,
+  Circle,
+  CIRCLE,
+  drawingTools,
+  LINE,
+  Rectangle,
+  RECTANGLE,
+} from "./constants.js";
+import {
+  computeStartingCoordinatesForDrawing,
   drawCircle,
   drawLine,
   drawRectangle,
 } from "./shapes/draw.js";
-import { insideCircle, insideRectangle } from "./utils/utils.js";
+import {
+  getCanvasCursorCoordinates,
+  insideCircle,
+  insideRectangle,
+} from "./utils/utils.js";
 
+let isMouseDown = false;
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
 const ctx = canvas.getContext("2d");
 ctx.lineWidth = store.getBrushSize();
 let shapeBeingDrawn = null;
 let shapeSelected = null;
+let dragOffsetX = 0,
+  dragOffsetY = 0;
 
 const clearCanvasAndRedrawAllShapes = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -29,16 +43,13 @@ const computeCanvasPosition = () => {
 };
 
 const beginDrawing = (event) => {
-  store.setIsDrawing(true);
-  if (store.getControls().isMousePositionForStartingCoordinates) {
-    computeStartingCoordinates(event);
-    store.setIsMousePositionForStartingCoordinates(false);
+  if (store.getControls().isCursorAtDrawingStartPoint) {
+    computeStartingCoordinatesForDrawing(event);
+    store.setIsCursorAtDrawingStartPoint(false);
   }
 };
 
 const drawing = (event) => {
-  if (!store.getControls().isDrawing) return;
-
   switch (store.shapeSelectedToDraw) {
     case RECTANGLE:
       shapeBeingDrawn = drawRectangle(event);
@@ -59,10 +70,10 @@ const drawing = (event) => {
 };
 
 const endDrawing = () => {
-  store.setIsMousePositionForStartingCoordinates(true);
-  store.setIsDrawing(false);
-  if (shapeBeingDrawn)
+  store.setIsCursorAtDrawingStartPoint(true);
+  if (shapeBeingDrawn) {
     manager.executeCommand(new AddShapeCommand(store, shapeBeingDrawn));
+  }
 };
 
 const undo = () => {
@@ -75,115 +86,74 @@ const redo = () => {
   clearCanvasAndRedrawAllShapes();
 };
 
-let deltaX = 0,
-  deltaY = 0;
-const movingShape = (event) => {
+const getShapeBelowCursor = (event) => {
+  let shapeBelowCursor = null;
+  const { x, y } = getCanvasCursorCoordinates(event);
+  store.shapes.forEach((shape) => {
+    const shapeType = shape.constructor.name;
+    if (
+      (shapeType === Rectangle && insideRectangle(shape, x, y)) ||
+      (shapeType === Circle && insideCircle(shape, x, y))
+    ) {
+      shapeBelowCursor = shape;
+    }
+  });
+  return shapeBelowCursor;
+};
+
+const moveShape = (event) => {
   if (!shapeSelected) return;
 
-  const newX = event.clientX - store.getCanvasCoordinates().x - deltaX;
-  const newY = event.clientY - store.getCanvasCoordinates().y - deltaY;
+  const newX = getCanvasCursorCoordinates(event).x - dragOffsetX;
+  const newY = getCanvasCursorCoordinates(event).y - dragOffsetY;
   shapeSelected.x = newX;
   shapeSelected.y = newY;
   clearCanvasAndRedrawAllShapes();
 };
 
 const handleCanvasMouseDown = (event) => {
-  shapeSelected = null;
-  const allShapes = store.shapes;
-  const x = event.clientX - store.getCanvasCoordinates().x;
-  const y = event.clientY - store.getCanvasCoordinates().y;
-  let isShapeSelected = false;
-  for (let i = 0; i < allShapes.length; i++) {
-    const shapeType = allShapes[i].constructor.name;
-    switch (shapeType) {
-      case "Rectangle":
-        if (insideRectangle(allShapes[i], x, y)) {
-          shapeSelected = allShapes[i];
-          // manager.executeCommand(new MoveShapeCommand(store, shapeBeingMoved));
-        }
-        break;
-      case "Circle":
-        if (insideCircle(allShapes[i], x, y)) {
-          shapeSelected = allShapes[i];
-          // manager.executeCommand(new MoveShapeCommand(store, shapeBeingMoved));
-        }
-        break;
-      default:
-        console.log("Unknown shape in list");
-    }
-    if (isShapeSelected) break;
-  }
-
-  clearCanvasAndRedrawAllShapes();
+  shapeSelected = getShapeBelowCursor(event);
   if (shapeSelected) {
-    shapeSelected.draw(ctx);
-    deltaX = event.clientX - store.getCanvasCoordinates().x - shapeSelected.x;
-    deltaY = event.clientY - store.getCanvasCoordinates().y - shapeSelected.y;
+    dragOffsetX = getCanvasCursorCoordinates(event).x - shapeSelected.x;
+    dragOffsetY = getCanvasCursorCoordinates(event).y - shapeSelected.y;
   }
-  ctx.strokeStyle = "black";
 };
 
 const handleCanvasMouseMove = (event) => {
   if (store.getTools().isDrawingToolEnabled) {
-    drawing(event);
+    if (isMouseDown) drawing(event);
     return;
   }
 
-  const allShapes = store.shapes;
-  const x = event.clientX - store.getCanvasCoordinates().x;
-  const y = event.clientY - store.getCanvasCoordinates().y;
-  store.setIsMoveToolEnabled(false);
-  let shouldContinue = true;
-  for (let i = 0; i < allShapes.length; i++) {
-    const shapeType = allShapes[i].constructor.name;
-    switch (shapeType) {
-      case "Rectangle":
-        if (insideRectangle(allShapes[i], x, y)) {
-          store.setIsMoveToolEnabled(true);
-          shouldContinue = false;
-        }
-        break;
-      case "Circle":
-        if (insideCircle(allShapes[i], x, y)) {
-          store.setIsMoveToolEnabled(true);
-          shouldContinue = false;
-        }
-        break;
-      default:
-        console.log("Unknown shape in list");
-    }
-    if (!shouldContinue) break;
-  }
-  if (store.getTools().isMoveToolEnabled) {
-    canvas.classList.add("cursor-move");
-  } else {
-    canvas.classList.remove("cursor-move");
-  }
-  if (store.getControls().isMovingShape) movingShape(event);
+  if (getShapeBelowCursor(event)) store.setIsMoveToolEnabled(true);
+  else store.setIsMoveToolEnabled(false);
+
+  if (store.getTools().isMoveToolEnabled) canvas.classList.add("cursor-move");
+  else canvas.classList.remove("cursor-move");
+
+  if (isMouseDown && store.getTools().isMoveToolEnabled) moveShape(event);
 };
 
 // Event listeners
 window.addEventListener("load", computeCanvasPosition);
 
+// MOUSE DOWN
 canvas.addEventListener("mousedown", (event) => {
-  // if (store.getTools().isSelectToolEnabled) beginSelecting(event);
-  // if (store.getTools().isMoveToolEnabled) beginMoving(event);
+  isMouseDown = true;
   if (store.getTools().isDrawingToolEnabled) beginDrawing(event);
-  if (store.getTools().isMoveToolEnabled) store.setIsMovingShape(true);
   if (!store.getTools().isDrawingToolEnabled) handleCanvasMouseDown(event);
 });
 
+// MOUSE MOVE
 canvas.addEventListener("mousemove", (event) => {
-  // if (store.getTools().isSelectToolEnabled) selecting(event);
-  // if (store.getTools().isMoveToolEnabled) moving(event);
   handleCanvasMouseMove(event);
 });
 
+// MOUSE UP
 canvas.addEventListener("mouseup", (event) => {
-  // if (store.getTools().isSelectToolEnabled) endSelecting(event);
-  // if (store.getTools().isMoveToolEnabled) endMoving(event);
+  isMouseDown = false;
   if (store.getTools().isDrawingToolEnabled) endDrawing(event);
-  if (store.getTools().isMoveToolEnabled) store.setIsMovingShape(false);
+  if (store.getTools().isMoveToolEnabled) store.setIsMoveToolEnabled(false);
 });
 
 document.getElementById("btn-select").addEventListener("click", () => {
@@ -205,42 +175,3 @@ drawingTools.forEach((tool) => {
 
 document.getElementById("btn-undo").addEventListener("click", undo);
 document.getElementById("btn-redo").addEventListener("click", redo);
-
-/**
- * shapesBeingSelected,
- * shapesBeingMoved
- * shapeBeingDrawn
- *
- * isSelectToolEnabled
- * isMoveToolEnabled -> this will be enabled only when there are shapes selected and cursor is inside boundary
- * isDrawingToolEnabled
- *
- * Click on select tool
- *  -> isSelectToolEnabled: true
- *  -> isMoveToolEnabled: false
- *  -> isDrawingToolEnabled: false
- *
- *
- * Click on drawing tool
- *  -> isSelectToolEnabled: false
- *  -> isMoveToolEnabled: false
- *  -> isDrawingToolEnabled: true,
- *  -> shapeBeingDrawn: Rectangle | Circle | Line ...
- *
- * # Mousedown on canvas
- * if isSelectToolEnabled -> beginSelecting()
- * if isMoveToolEnabled -> beginMoving()
- * if isDrawingToolEnabled -> beginDrawing()
- *
- *
- * # Mousemove on canvas
- * if isSelectToolEnabled -> selecting()
- * if isMoveToolEnabled -> moving()
- * if isDrawingToolEnabled -> drawing()
- *
- *
- * # Mouseup on canvas
- * if isSelectToolEnabled -> endSelecting()
- * if isMoveToolEnabled -> endMoving()
- * if isDrawingToolEnabled -> endDrawing()
- */

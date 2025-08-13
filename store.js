@@ -6,9 +6,7 @@ export class Store {
       isDrawingToolEnabled: false,
     };
     this.controls = {
-      isMousePositionForStartingCoordinates: true,
-      isDrawing: false,
-      isMovingShape: false,
+      isCursorAtDrawingStartPoint: true,
     };
     this.canavas = {
       coordinates: {
@@ -39,11 +37,9 @@ export class Store {
   setIsDrawingToolEnabled = (isEnabled) =>
     (this.tools.isDrawingToolEnabled = isEnabled);
 
-  setIsMousePositionForStartingCoordinates = (value) => {
-    this.controls.isMousePositionForStartingCoordinates = value;
+  setIsCursorAtDrawingStartPoint = (value) => {
+    this.controls.isCursorAtDrawingStartPoint = value;
   };
-  setIsDrawing = (isDrawing) => (this.controls.isDrawing = isDrawing);
-  setIsMovingShape = (isMoving) => (this.controls.isMovingShape = isMoving);
   setCanvasCoordinates = (newCoordinates) => {
     this.canavas.coordinates = { ...newCoordinates };
   };

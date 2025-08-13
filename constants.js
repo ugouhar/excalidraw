@@ -1,6 +1,11 @@
 export const RECTANGLE = "RECTANGLE";
 export const CIRCLE = "CIRCLE";
 export const LINE = "LINE";
+
+export const Rectangle = "Rectangle";
+export const Circle = "Circle";
+export const Line = "Line";
+
 export const drawingTools = [
   { id: "btn-rectangle", shape: RECTANGLE },
   { id: "btn-circle", shape: CIRCLE },
