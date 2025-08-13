@@ -17,7 +17,8 @@ export class Store {
       brushSize: 2,
     };
     this.shapes = [];
-    this.shapeSelectedToDraw = "RECTANGLE";
+    this.shapeSelectedToDraw = null;
+    this.shapeSelected = null;
   }
   getState = () => ({
     controls: this.controls,
@@ -28,6 +29,7 @@ export class Store {
   getControls = () => this.controls;
   getCanvasCoordinates = () => this.canavas.coordinates;
   getBrushSize = () => this.canavas.brushSize;
+  getShapeSelected = () => this.shapeSelected;
 
   setIsSelectToolEnabled = (isEnabled) =>
     (this.tools.isSelectToolEnabled = isEnabled);
@@ -46,6 +48,7 @@ export class Store {
     this.canavas.coordinates = { ...newCoordinates };
   };
   setShapeSelectedToDraw = (newShape) => (this.shapeSelectedToDraw = newShape);
+  setShapeSelected = (newShape) => (this.shapeSelected = newShape);
 }
 
 export const store = new Store();

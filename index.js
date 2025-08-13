@@ -24,7 +24,6 @@ const manager = new CommandManager();
 const ctx = canvas.getContext("2d");
 ctx.lineWidth = store.getBrushSize();
 let shapeBeingDrawn = null;
-let shapeSelected = null;
 let dragOffsetX = 0,
   dragOffsetY = 0;
 
@@ -99,20 +98,22 @@ const getShapeBelowCursor = (event) => {
 };
 
 const moveShape = (event) => {
-  if (!shapeSelected) return;
+  if (!store.getShapeSelected()) return;
 
   const newX = getCanvasCursorCoordinates(event).x - dragOffsetX;
   const newY = getCanvasCursorCoordinates(event).y - dragOffsetY;
-  shapeSelected.x = newX;
-  shapeSelected.y = newY;
+  store.getShapeSelected().x = newX;
+  store.getShapeSelected().y = newY;
   clearCanvasAndRedrawAllShapes();
 };
 
 const handleCanvasMouseDown = (event) => {
-  shapeSelected = getShapeBelowCursor(event);
-  if (shapeSelected) {
-    dragOffsetX = getCanvasCursorCoordinates(event).x - shapeSelected.x;
-    dragOffsetY = getCanvasCursorCoordinates(event).y - shapeSelected.y;
+  store.setShapeSelected(getShapeBelowCursor(event));
+  if (store.getShapeSelected()) {
+    dragOffsetX =
+      getCanvasCursorCoordinates(event).x - store.getShapeSelected().x;
+    dragOffsetY =
+      getCanvasCursorCoordinates(event).y - store.getShapeSelected().y;
   }
 };
 
