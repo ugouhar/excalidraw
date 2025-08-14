@@ -9,8 +9,12 @@ export class Store {
       isCursorAtDrawingStartPoint: true,
       isMouseDown: false,
     };
-    this.canavas = {
+    this.canvas = {
       coordinates: {
+        x: 0,
+        y: 0,
+      },
+      cursorCoordinates: {
         x: 0,
         y: 0,
       },
@@ -22,13 +26,14 @@ export class Store {
   }
   getState = () => ({
     controls: this.controls,
-    canvas: this.canavas,
+    canvas: this.canvas,
     shapes: this.shapes,
   });
   getTools = () => this.tools;
   getControls = () => this.controls;
-  getCanvasCoordinates = () => this.canavas.coordinates;
-  getBrushSize = () => this.canavas.brushSize;
+  getCanvasCoordinates = () => this.canvas.coordinates;
+  getCanvasCursorCoordinates = () => this.canvas.cursorCoordinates;
+  getBrushSize = () => this.canvas.brushSize;
   getShapeSelected = () => this.shapeSelected;
 
   setIsSelectToolEnabled = (isEnabled) =>
@@ -45,7 +50,10 @@ export class Store {
   };
   setIsMouseDown = (isMouseDown) => (this.controls.isMouseDown = isMouseDown);
   setCanvasCoordinates = (newCoordinates) => {
-    this.canavas.coordinates = { ...newCoordinates };
+    this.canvas.coordinates = { ...newCoordinates };
+  };
+  setCanvasCursorCoordinates = (newCoordinates) => {
+    this.canvas.cursorCoordinates = { ...newCoordinates };
   };
   setShapeSelectedToDraw = (newShape) => (this.shapeSelectedToDraw = newShape);
   setShapeSelected = (newShape) => (this.shapeSelected = newShape);

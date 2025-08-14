@@ -9,26 +9,25 @@ export const registerCanvasEvents = (
   canvas,
   beginDrawing,
   endDrawing,
+  endMoving,
   handleCanvasMouseDown,
   handleCanvasMouseMove
 ) => {
   // MOUSE DOWN
-  canvas.addEventListener("mousedown", (event) => {
+  canvas.addEventListener("mousedown", () => {
     store.setIsMouseDown(true);
-    if (store.getTools().isDrawingToolEnabled) beginDrawing(event);
-    if (!store.getTools().isDrawingToolEnabled) handleCanvasMouseDown(event);
+    if (store.getTools().isDrawingToolEnabled) beginDrawing();
+    if (!store.getTools().isDrawingToolEnabled) handleCanvasMouseDown();
   });
 
   // MOUSE MOVE
-  canvas.addEventListener("mousemove", (event) => {
-    handleCanvasMouseMove(event);
-  });
+  canvas.addEventListener("mousemove", handleCanvasMouseMove);
 
   // MOUSE UP
-  canvas.addEventListener("mouseup", (event) => {
+  canvas.addEventListener("mouseup", () => {
     store.setIsMouseDown(false);
-    if (store.getTools().isDrawingToolEnabled) endDrawing(event);
-    if (store.getTools().isMoveToolEnabled) store.setIsMoveToolEnabled(false);
+    if (store.getTools().isDrawingToolEnabled) endDrawing();
+    if (store.getTools().isMoveToolEnabled) endMoving();
   });
 };
 
