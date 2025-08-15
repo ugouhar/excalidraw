@@ -25,3 +25,5 @@ export class AddShapeCommand {
     this.undoStack.push(lastShape);
   }
 }
+
+// Todo: Update AddShape to use static undo redo

@@ -14,6 +14,7 @@ import {
   registerPageLoadEvent,
   registerToolsEvents,
 } from "./utils/event-listeners.js";
+import { MoveShapeCommand } from "./commands/move-shape.js";
 
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
@@ -22,6 +23,7 @@ ctx.lineWidth = store.getBrushSize();
 let shapeBeingDrawn = null;
 let dragOffsetX = 0,
   dragOffsetY = 0;
+let didShapeJustStartMoving = true;
 
 const clearCanvasAndRedrawAllShapes = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -41,7 +43,7 @@ const beginDrawing = () => {
   }
 };
 
-const drawing = () => {
+const drawingShape = () => {
   switch (store.shapeSelectedToDraw) {
     case RECTANGLE:
       shapeBeingDrawn = drawRectangle();
@@ -68,13 +70,25 @@ const endDrawing = () => {
   }
 };
 
-const endMoving = () => {
-  const shapeSelected = store.getShapeSelected();
-  if (shapeSelected) {
-    //
-  }
+const beginMoving = () => {
+  console.log("begin moving", didShapeJustStartMoving);
+  manager.executeCommand(new MoveShapeCommand(store, store.getShapeSelected()));
+  didShapeJustStartMoving = false;
+};
 
+const movingMoving = () => {
+  if (!store.getShapeSelected()) return;
+
+  const newX = store.getCanvasCursorCoordinates().x - dragOffsetX;
+  const newY = store.getCanvasCursorCoordinates().y - dragOffsetY;
+  store.getShapeSelected().x = newX;
+  store.getShapeSelected().y = newY;
+  clearCanvasAndRedrawAllShapes();
+};
+
+const endMoving = () => {
   store.setIsMoveToolEnabled(false);
+  didShapeJustStartMoving = true;
 };
 
 const undo = () => {
@@ -102,23 +116,12 @@ const getShapeBelowCursor = () => {
   return shapeBelowCursor;
 };
 
-const moveShape = () => {
-  if (!store.getShapeSelected()) return;
-
-  const newX = store.getCanvasCursorCoordinates().x - dragOffsetX;
-  const newY = store.getCanvasCursorCoordinates().y - dragOffsetY;
-  store.getShapeSelected().x = newX;
-  store.getShapeSelected().y = newY;
-  clearCanvasAndRedrawAllShapes();
-};
-
 const handleCanvasMouseDown = () => {
-  store.setShapeSelected(getShapeBelowCursor());
-  if (store.getShapeSelected()) {
-    dragOffsetX =
-      store.getCanvasCursorCoordinates().x - store.getShapeSelected().x;
-    dragOffsetY =
-      store.getCanvasCursorCoordinates().y - store.getShapeSelected().y;
+  const shapeSelected = getShapeBelowCursor();
+  if (shapeSelected) {
+    store.setShapeSelected(shapeSelected);
+    dragOffsetX = store.getCanvasCursorCoordinates().x - shapeSelected.x;
+    dragOffsetY = store.getCanvasCursorCoordinates().y - shapeSelected.y;
   }
 };
 
@@ -127,11 +130,14 @@ const handleCanvasMouseMove = (event) => {
     x: event.clientX - store.getCanvasCoordinates().x,
     y: event.clientY - store.getCanvasCoordinates().y,
   });
-  if (store.getControls().isMouseDown && store.getTools().isDrawingToolEnabled)
-    drawing();
 
-  if (store.getControls().isMouseDown && store.getTools().isMoveToolEnabled)
-    moveShape();
+  if (store.getControls().isMouseDown && store.getTools().isDrawingToolEnabled)
+    drawingShape();
+
+  if (store.getControls().isMouseDown && store.getTools().isMoveToolEnabled) {
+    if (didShapeJustStartMoving) beginMoving();
+    else movingMoving();
+  }
 
   if (!store.getTools().isDrawingToolEnabled && getShapeBelowCursor()) {
     store.setIsMoveToolEnabled(true);
@@ -143,7 +149,6 @@ const handleCanvasMouseMove = (event) => {
 };
 
 registerPageLoadEvent(computeCanvasPosition);
-
 registerCanvasEvents(
   canvas,
   beginDrawing,
@@ -152,5 +157,4 @@ registerCanvasEvents(
   handleCanvasMouseDown,
   handleCanvasMouseMove
 );
-
 registerToolsEvents(canvas, undo, redo);

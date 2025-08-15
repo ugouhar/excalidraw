@@ -4,9 +4,10 @@
 body {
   padding: 0;
   margin: 0;
+  background-color: #ccc;
 }
 #canvas {
-  border: 1px solid #ccc;
+  border: 1px solid black;
   margin: 50px;
   cursor: default;
 }

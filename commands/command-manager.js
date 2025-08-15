@@ -1,18 +1,18 @@
 export class CommandManager {
   constructor() {
-    this.history = [];
+    this.undoStack = [];
     this.redoStack = [];
   }
 
   executeCommand = (command) => {
     command.execute();
-    this.history.push(command);
+    this.undoStack.push(command);
     this.redoStack = [];
   };
 
   undo() {
-    if (this.history.length === 0) return;
-    const lastCommand = this.history.pop();
+    if (this.undoStack.length === 0) return;
+    const lastCommand = this.undoStack.pop();
     if (lastCommand) {
       lastCommand.undo();
       this.redoStack.push(lastCommand);
@@ -20,10 +20,11 @@ export class CommandManager {
   }
 
   redo() {
+    if (this.redoStack.length === 0) return;
     const lastCommand = this.redoStack.pop();
     if (lastCommand) {
-      lastCommand.execute();
-      this.history.push(lastCommand);
+      lastCommand.redo();
+      this.undoStack.push(lastCommand);
     }
   }
 }
