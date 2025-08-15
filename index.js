@@ -71,7 +71,6 @@ const endDrawing = () => {
 };
 
 const beginMoving = () => {
-  console.log("begin moving", didShapeJustStartMoving);
   manager.executeCommand(new MoveShapeCommand(store, store.getShapeSelected()));
   didShapeJustStartMoving = false;
 };

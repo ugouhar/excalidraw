@@ -1,5 +1,6 @@
 export class MoveShapeCommand {
   static undoStack = [];
+  static redoStack = [];
   constructor(store, shape) {
     this.store = store;
     this.shape = shape;
@@ -19,16 +20,21 @@ export class MoveShapeCommand {
     }
 
     MoveShapeCommand.undoStack.push({
+      id: this.shape.id,
       x: this.shape.x,
       y: this.shape.y,
-      id: this.shape.id,
     });
 
-    this.redoStack = [];
+    MoveShapeCommand.redoStack = [];
   }
 
   undo() {
     if (MoveShapeCommand.undoStack.length === 0) return;
+    MoveShapeCommand.redoStack.push({
+      id: this.shape.id,
+      x: this.shape.x,
+      y: this.shape.y,
+    });
     const last = MoveShapeCommand.undoStack.pop();
     this.store.shapes.forEach((shape) => {
       if (shape.id === last.id) {
@@ -39,16 +45,18 @@ export class MoveShapeCommand {
   }
 
   redo() {
-    // if (this.redoStack.length === 0) return;
-    // const lastCoordinates = this.redoStack.pop();
-    // this.shape.x = lastCoordinates.x;
-    // this.shape.y = lastCoordinates.y;
-    // this.undoStack.push({ x: lastCoordinates.x, y: lastCoordinates.y });
+    if (MoveShapeCommand.redoStack.length === 0) return;
+    MoveShapeCommand.undoStack.push({
+      id: this.shape.id,
+      x: this.shape.x,
+      y: this.shape.y,
+    });
+    const last = MoveShapeCommand.redoStack.pop();
+    this.store.shapes.forEach((shape) => {
+      if (shape.id === last.id) {
+        shape.x = last.x;
+        shape.y = last.y;
+      }
+    });
   }
 }
-// normal undo is working
-// undo then moving and then undo is not working
-// implement redo
-/**
- * When a shape is moved, store it's previous coordinates
- */
