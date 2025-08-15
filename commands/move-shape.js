@@ -35,11 +35,12 @@ export class MoveShapeCommand {
       x: this.shape.x,
       y: this.shape.y,
     });
-    const last = MoveShapeCommand.undoStack.pop();
+
+    const lastMovedShape = MoveShapeCommand.undoStack.pop();
     this.store.shapes.forEach((shape) => {
-      if (shape.id === last.id) {
-        shape.x = last.x;
-        shape.y = last.y;
+      if (shape.id === lastMovedShape.id) {
+        shape.x = lastMovedShape.x;
+        shape.y = lastMovedShape.y;
       }
     });
   }
@@ -51,11 +52,12 @@ export class MoveShapeCommand {
       x: this.shape.x,
       y: this.shape.y,
     });
-    const last = MoveShapeCommand.redoStack.pop();
+
+    const lastMovedShape = MoveShapeCommand.redoStack.pop();
     this.store.shapes.forEach((shape) => {
-      if (shape.id === last.id) {
-        shape.x = last.x;
-        shape.y = last.y;
+      if (shape.id === lastMovedShape.id) {
+        shape.x = lastMovedShape.x;
+        shape.y = lastMovedShape.y;
       }
     });
   }

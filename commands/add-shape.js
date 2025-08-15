@@ -1,29 +1,29 @@
 export class AddShapeCommand {
+  static undoStack = [];
+  static redoStack = [];
+
   constructor(store, shape) {
     this.store = store;
     this.shape = shape;
-    this.undoStack = [];
-    this.redoStack = [];
   }
+
   execute() {
     this.store.shapes.push(this.shape);
-    this.undoStack.push(this.shape);
-    this.redoStack = [];
+    AddShapeCommand.undoStack.push(this.shape);
+    AddShapeCommand.redoStack = [];
   }
 
   undo() {
-    if (this.undoStack.length === 0) return;
-    const lastShape = this.undoStack.pop();
+    if (AddShapeCommand.undoStack.length === 0) return;
+    const lastShape = AddShapeCommand.undoStack.pop();
     this.store.shapes.pop();
-    this.redoStack.push(lastShape);
+    AddShapeCommand.redoStack.push(lastShape);
   }
 
   redo() {
-    if (this.redoStack.length === 0) return;
-    const lastShape = this.redoStack.pop();
+    if (AddShapeCommand.redoStack.length === 0) return;
+    const lastShape = AddShapeCommand.redoStack.pop();
     this.store.shapes.push(lastShape);
-    this.undoStack.push(lastShape);
+    AddShapeCommand.undoStack.push(lastShape);
   }
 }
-
-// Todo: Update AddShape to use static undo redo
