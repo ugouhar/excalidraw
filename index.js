@@ -1,9 +1,17 @@
 import { AddShapeCommand } from "./commands/add-shape.js";
 import { CommandManager } from "./commands/command-manager.js";
 import { store } from "./store.js";
-import { Circle, CIRCLE, LINE, Rectangle, RECTANGLE } from "./constants.js";
+import {
+  ARROW,
+  Circle,
+  CIRCLE,
+  LINE,
+  Rectangle,
+  RECTANGLE,
+} from "./constants.js";
 import {
   computeStartingCoordinatesForDrawing,
+  drawArrow,
   drawCircle,
   drawLine,
   drawRectangle,
@@ -54,6 +62,10 @@ const drawingShape = () => {
 
     case LINE:
       shapeBeingDrawn = drawLine();
+      break;
+
+    case ARROW:
+      shapeBeingDrawn = drawArrow();
       break;
     default:
       console.log("Unknown shape");
