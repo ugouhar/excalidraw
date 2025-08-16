@@ -96,23 +96,27 @@ const beginMoving = () => {
 const movingShape = () => {
   if (!store.getShapeSelected()) return;
 
+  const { x: cx, y: cy } = store.getCanvasCursorCoordinates();
+  const shapeSelected = store.getShapeSelected();
   const shapeType = store.getShapeSelected().constructor.name;
-  if (shapeType === Rectangle || shapeType === Circle) {
-    const newX = store.getCanvasCursorCoordinates().x - dragOffsetX;
-    const newY = store.getCanvasCursorCoordinates().y - dragOffsetY;
-    store.getShapeSelected().x = newX;
-    store.getShapeSelected().y = newY;
-  }
-  if (shapeType === Line || shapeType === Arrow) {
-    const newX1 = store.getCanvasCursorCoordinates().x - dragOffsetX1;
-    const newY1 = store.getCanvasCursorCoordinates().y - dragOffsetY1;
-    const newX2 = store.getCanvasCursorCoordinates().x - dragOffsetX2;
-    const newY2 = store.getCanvasCursorCoordinates().y - dragOffsetY2;
 
-    store.getShapeSelected().x1 = newX1;
-    store.getShapeSelected().y1 = newY1;
-    store.getShapeSelected().x2 = newX2;
-    store.getShapeSelected().y2 = newY2;
+  if (shapeType === Rectangle || shapeType === Circle) {
+    const newX = cx - dragOffsetX;
+    const newY = cy - dragOffsetY;
+    shapeSelected.x = newX;
+    shapeSelected.y = newY;
+  }
+
+  if (shapeType === Line || shapeType === Arrow) {
+    const newX1 = cx - dragOffsetX1;
+    const newY1 = cy - dragOffsetY1;
+    const newX2 = cx - dragOffsetX2;
+    const newY2 = cy - dragOffsetY2;
+
+    shapeSelected.x1 = newX1;
+    shapeSelected.y1 = newY1;
+    shapeSelected.x2 = newX2;
+    shapeSelected.y2 = newY2;
   }
 
   clearCanvasAndRedrawAllShapes();
@@ -152,20 +156,21 @@ const getShapeBelowCursor = () => {
 
 const handleCanvasMouseDown = () => {
   const shapeSelected = getShapeBelowCursor();
+  const { x: cx, y: cy } = store.getCanvasCursorCoordinates();
 
   if (shapeSelected) {
     store.setShapeSelected(shapeSelected);
     const shapeType = shapeSelected.constructor.name;
     if (shapeType === Rectangle || shapeType === Circle) {
-      dragOffsetX = store.getCanvasCursorCoordinates().x - shapeSelected.x;
-      dragOffsetY = store.getCanvasCursorCoordinates().y - shapeSelected.y;
+      dragOffsetX = cx - shapeSelected.x;
+      dragOffsetY = cy - shapeSelected.y;
     }
     if (shapeType === Line || shapeType === Arrow) {
-      dragOffsetX1 = store.getCanvasCursorCoordinates().x - shapeSelected.x1;
-      dragOffsetY1 = store.getCanvasCursorCoordinates().y - shapeSelected.y1;
+      dragOffsetX1 = cx - shapeSelected.x1;
+      dragOffsetY1 = cy - shapeSelected.y1;
 
-      dragOffsetX2 = store.getCanvasCursorCoordinates().x - shapeSelected.x2;
-      dragOffsetY2 = store.getCanvasCursorCoordinates().y - shapeSelected.y2;
+      dragOffsetX2 = cx - shapeSelected.x2;
+      dragOffsetY2 = cy - shapeSelected.y2;
     }
   }
 };
@@ -203,3 +208,5 @@ registerCanvasEvents(
   handleCanvasMouseMove
 );
 registerToolsEvents(canvas, undo, redo);
+
+// Refactor this file
