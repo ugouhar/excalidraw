@@ -8,6 +8,8 @@ import {
   CIRCLE,
   Line,
   LINE,
+  PENCIL,
+  Pencil,
   Rectangle,
   RECTANGLE,
 } from "./constants.js";
@@ -16,6 +18,7 @@ import {
   drawArrow,
   drawCircle,
   drawLine,
+  drawPencil,
   drawRectangle,
 } from "./shapes/draw.js";
 import { insideCircle, insideRectangle, overLine } from "./utils/utils.js";
@@ -72,6 +75,10 @@ const drawingShape = () => {
 
     case ARROW:
       shapeBeingDrawn = drawArrow();
+      break;
+
+    case PENCIL:
+      shapeBeingDrawn = drawPencil();
       break;
     default:
       console.log("Unknown shape");
@@ -171,6 +178,10 @@ const handleCanvasMouseDown = () => {
 
       dragOffsetX2 = cx - shapeSelected.x2;
       dragOffsetY2 = cy - shapeSelected.y2;
+    }
+
+    if (shapeType === Pencil) {
+      //
     }
   }
 };
