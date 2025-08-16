@@ -2,9 +2,11 @@ import { AddShapeCommand } from "./commands/add-shape.js";
 import { CommandManager } from "./commands/command-manager.js";
 import { store } from "./store.js";
 import {
+  Arrow,
   ARROW,
   Circle,
   CIRCLE,
+  Line,
   LINE,
   Rectangle,
   RECTANGLE,
@@ -16,7 +18,7 @@ import {
   drawLine,
   drawRectangle,
 } from "./shapes/draw.js";
-import { insideCircle, insideRectangle } from "./utils/utils.js";
+import { insideCircle, insideRectangle, overLine } from "./utils/utils.js";
 import {
   registerCanvasEvents,
   registerPageLoadEvent,
@@ -31,6 +33,10 @@ ctx.lineWidth = store.getBrushSize();
 let shapeBeingDrawn = null;
 let dragOffsetX = 0,
   dragOffsetY = 0;
+let dragOffsetX1 = 0,
+  dragOffsetY1 = 0;
+let dragOffsetX2 = 0,
+  dragOffsetY2 = 0;
 let didShapeJustStartMoving = true;
 
 const clearCanvasAndRedrawAllShapes = () => {
@@ -87,13 +93,28 @@ const beginMoving = () => {
   didShapeJustStartMoving = false;
 };
 
-const movingMoving = () => {
+const movingShape = () => {
   if (!store.getShapeSelected()) return;
 
-  const newX = store.getCanvasCursorCoordinates().x - dragOffsetX;
-  const newY = store.getCanvasCursorCoordinates().y - dragOffsetY;
-  store.getShapeSelected().x = newX;
-  store.getShapeSelected().y = newY;
+  const shapeType = store.getShapeSelected().constructor.name;
+  if (shapeType === Rectangle || shapeType === Circle) {
+    const newX = store.getCanvasCursorCoordinates().x - dragOffsetX;
+    const newY = store.getCanvasCursorCoordinates().y - dragOffsetY;
+    store.getShapeSelected().x = newX;
+    store.getShapeSelected().y = newY;
+  }
+  if (shapeType === Line || shapeType === Arrow) {
+    const newX1 = store.getCanvasCursorCoordinates().x - dragOffsetX1;
+    const newY1 = store.getCanvasCursorCoordinates().y - dragOffsetY1;
+    const newX2 = store.getCanvasCursorCoordinates().x - dragOffsetX2;
+    const newY2 = store.getCanvasCursorCoordinates().y - dragOffsetY2;
+
+    store.getShapeSelected().x1 = newX1;
+    store.getShapeSelected().y1 = newY1;
+    store.getShapeSelected().x2 = newX2;
+    store.getShapeSelected().y2 = newY2;
+  }
+
   clearCanvasAndRedrawAllShapes();
 };
 
@@ -119,7 +140,9 @@ const getShapeBelowCursor = () => {
     const shapeType = shape.constructor.name;
     if (
       (shapeType === Rectangle && insideRectangle(shape, x, y)) ||
-      (shapeType === Circle && insideCircle(shape, x, y))
+      (shapeType === Circle && insideCircle(shape, x, y)) ||
+      (shapeType === Line && overLine(shape, x, y)) ||
+      (shapeType === Arrow && overLine(shape, x, y))
     ) {
       shapeBelowCursor = shape;
     }
@@ -129,10 +152,21 @@ const getShapeBelowCursor = () => {
 
 const handleCanvasMouseDown = () => {
   const shapeSelected = getShapeBelowCursor();
+
   if (shapeSelected) {
     store.setShapeSelected(shapeSelected);
-    dragOffsetX = store.getCanvasCursorCoordinates().x - shapeSelected.x;
-    dragOffsetY = store.getCanvasCursorCoordinates().y - shapeSelected.y;
+    const shapeType = shapeSelected.constructor.name;
+    if (shapeType === Rectangle || shapeType === Circle) {
+      dragOffsetX = store.getCanvasCursorCoordinates().x - shapeSelected.x;
+      dragOffsetY = store.getCanvasCursorCoordinates().y - shapeSelected.y;
+    }
+    if (shapeType === Line || shapeType === Arrow) {
+      dragOffsetX1 = store.getCanvasCursorCoordinates().x - shapeSelected.x1;
+      dragOffsetY1 = store.getCanvasCursorCoordinates().y - shapeSelected.y1;
+
+      dragOffsetX2 = store.getCanvasCursorCoordinates().x - shapeSelected.x2;
+      dragOffsetY2 = store.getCanvasCursorCoordinates().y - shapeSelected.y2;
+    }
   }
 };
 
@@ -147,7 +181,7 @@ const handleCanvasMouseMove = (event) => {
 
   if (store.getControls().isMouseDown && store.getTools().isMoveToolEnabled) {
     if (didShapeJustStartMoving) beginMoving();
-    else movingMoving();
+    else movingShape();
   }
 
   if (!store.getTools().isDrawingToolEnabled && getShapeBelowCursor()) {

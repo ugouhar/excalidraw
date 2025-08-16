@@ -8,3 +8,4 @@ export const TEXT = "TEXT";
 export const Rectangle = "Rectangle";
 export const Circle = "Circle";
 export const Line = "Line";
+export const Arrow = "Arrow";
