@@ -13,23 +13,17 @@
   <body>
     <div>
       <div id="toolbar">
-        <div><i class="fa-regular fa-square"></i></div>
-        <div><i class="fa-regular fa-circle"></i></div>
-        <div><i class="fa-solid fa-minus"></i></div>
-        <div><i class="fa-solid fa-arrow-right"></i></div>
-        <div><i class="fa-solid fa-pencil"></i></div>
-        <div><i class="fa-solid fa-font"></i></div>
-        <div><i class="fa-solid fa-arrow-pointer"></i></div>
+        <i class="fa-solid fa-arrow-pointer" id="select-tool"></i>
+        <i class="fa-regular fa-square" id="rectangle-tool"></i>
+        <i class="fa-regular fa-circle" id="circle-tool"></i>
+        <i class="fa-solid fa-arrow-right" id="arrow-tool"></i>
+        <i class="fa-solid fa-minus" id="line-tool"></i>
+        <i class="fa-solid fa-pencil" id="pencil-tool"></i>
+        <i class="fa-solid fa-font" id="text-tool"></i>
+        <i class="fa-solid fa-rotate-left" id="undo-tool"></i>
+        <i class="fa-solid fa-rotate-right" id="redo-tool"></i>
       </div>
       <div><canvas id="canvas" width="900" height="500"></canvas></div>
-      <div id="shape-tools">
-        <button id="select-tool">Select</button>
-        <button id="rectangle-tool">Rectangle</button>
-        <button id="circle-tool">Circle</button>
-        <button id="line-tool">Line</button>
-        <button id="undo-tool">Undo</button>
-        <button id="redo-tool">Redo</button>
-      </div>
     </div>
 
     <script src="./index.js" type="module"></script>
