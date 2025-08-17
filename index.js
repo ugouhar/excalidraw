@@ -27,7 +27,7 @@ let dragOffsetX1 = 0;
 let dragOffsetY1 = 0;
 let dragOffsetX2 = 0;
 let dragOffsetY2 = 0;
-let didShapeJustStartMoving = true;
+let isShapeAboutToMove = true;
 
 const setBrushSize = () => {
   ctx.lineWidth = store.getBrushSize();
@@ -51,7 +51,7 @@ const beginDrawing = () => {
   }
 };
 
-const drawingShape = () => {
+const drawShape = () => {
   switch (store.getShapeSelectedToDraw()) {
     case RECTANGLE:
       shapeBeingDrawn = drawRectangle();
@@ -85,10 +85,10 @@ const endDrawing = () => {
 
 const beginMoving = () => {
   manager.executeCommand(new MoveShapeCommand(store, store.getShapeSelected()));
-  didShapeJustStartMoving = false;
+  isShapeAboutToMove = false;
 };
 
-const movingShape = () => {
+const moveShape = () => {
   const shapeSelected = store.getShapeSelected();
   if (!shapeSelected) return;
 
@@ -112,7 +112,7 @@ const movingShape = () => {
 
 const endMoving = () => {
   store.setIsMoveToolEnabled(false);
-  didShapeJustStartMoving = true;
+  isShapeAboutToMove = true;
 };
 
 const undo = () => {
@@ -135,48 +135,71 @@ const getShapeBelowCursor = () => {
   return shapeBelowCursor;
 };
 
-const handleCanvasMouseDown = () => {
-  const shapeSelected = getShapeBelowCursor();
+const setDragOffsets = () => {
+  const shapeSelected = store.getShapeSelected();
+
+  if (!shapeSelected) return;
+
   const { x: cx, y: cy } = store.getCanvasCursorCoordinates();
+  const shapeType = shapeSelected.type;
 
-  if (shapeSelected) {
-    store.setShapeSelected(shapeSelected);
-    const shapeType = shapeSelected.type;
-    if (shapeType === RECTANGLE || shapeType === CIRCLE) {
-      dragOffsetX = cx - shapeSelected.x;
-      dragOffsetY = cy - shapeSelected.y;
-    }
-    if (shapeType === LINE || shapeType === ARROW) {
-      dragOffsetX1 = cx - shapeSelected.x1;
-      dragOffsetY1 = cy - shapeSelected.y1;
+  if (shapeType === RECTANGLE || shapeType === CIRCLE) {
+    dragOffsetX = cx - shapeSelected.x;
+    dragOffsetY = cy - shapeSelected.y;
+  }
 
-      dragOffsetX2 = cx - shapeSelected.x2;
-      dragOffsetY2 = cy - shapeSelected.y2;
-    }
+  if (shapeType === LINE || shapeType === ARROW) {
+    dragOffsetX1 = cx - shapeSelected.x1;
+    dragOffsetY1 = cy - shapeSelected.y1;
+
+    dragOffsetX2 = cx - shapeSelected.x2;
+    dragOffsetY2 = cy - shapeSelected.y2;
   }
 };
 
-const handleCanvasMouseMove = (event) => {
-  store.setCanvasCursorCoordinates({
-    x: event.clientX - store.getCanvasCoordinates().x,
-    y: event.clientY - store.getCanvasCoordinates().y,
-  });
+const handleCanvasMouseDown = () => {
+  store.setShapeSelected(getShapeBelowCursor());
+  setDragOffsets();
+};
 
-  if (store.getControls().isMouseDown && store.getTools().isDrawingToolEnabled)
-    drawingShape();
-
-  if (store.getControls().isMouseDown && store.getTools().isMoveToolEnabled) {
-    if (didShapeJustStartMoving) beginMoving();
-    else movingShape();
-  }
-
-  if (!store.getTools().isDrawingToolEnabled && getShapeBelowCursor()) {
+const checkCanEnableMoveCursorIcon = () => {
+  if (store.getTools().isSelectToolEnabled && getShapeBelowCursor()) {
     store.setIsMoveToolEnabled(true);
     canvas.classList.add("cursor-move");
   } else {
     store.setIsMoveToolEnabled(false);
     canvas.classList.remove("cursor-move");
   }
+};
+
+const checkCanDraw = () => {
+  if (store.getControls().isMouseDown && store.getTools().isDrawingToolEnabled)
+    drawShape();
+};
+
+const checkCanMoveShape = () => {
+  if (
+    store.getControls().isMouseDown &&
+    store.getTools().isMoveToolEnabled &&
+    store.getShapeSelected()
+  ) {
+    if (isShapeAboutToMove) beginMoving();
+    else moveShape();
+  }
+};
+
+const updateCanvasCursorCoordinates = (event) => {
+  store.setCanvasCursorCoordinates({
+    x: event.clientX - store.getCanvasCoordinates().x,
+    y: event.clientY - store.getCanvasCoordinates().y,
+  });
+};
+
+const handleCanvasMouseMove = (event) => {
+  updateCanvasCursorCoordinates(event);
+  checkCanEnableMoveCursorIcon();
+  checkCanDraw();
+  checkCanMoveShape();
 };
 
 registerPageLoadEvent(computeCanvasPosition, setBrushSize);
@@ -189,5 +212,3 @@ registerCanvasEvents(
   handleCanvasMouseMove
 );
 registerToolsEvents(canvas, undo, redo);
-
-// Refactor this file
