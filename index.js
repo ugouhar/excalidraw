@@ -1,16 +1,7 @@
 import { AddShapeCommand } from "./commands/add-shape.js";
 import { CommandManager } from "./commands/command-manager.js";
 import { store } from "./store.js";
-import {
-  Arrow,
-  ARROW,
-  Circle,
-  CIRCLE,
-  Line,
-  LINE,
-  Rectangle,
-  RECTANGLE,
-} from "./constants.js";
+import { ARROW, CIRCLE, LINE, RECTANGLE } from "./constants.js";
 import {
   computeStartingCoordinatesForDrawing,
   drawArrow,
@@ -61,7 +52,7 @@ const beginDrawing = () => {
 };
 
 const drawingShape = () => {
-  switch (store.shapeSelectedToDraw) {
+  switch (store.getShapeSelectedToDraw()) {
     case RECTANGLE:
       shapeBeingDrawn = drawRectangle();
       break;
@@ -76,6 +67,7 @@ const drawingShape = () => {
     case ARROW:
       shapeBeingDrawn = drawArrow();
       break;
+
     default:
       console.log("Unknown shape");
   }
@@ -97,20 +89,21 @@ const beginMoving = () => {
 };
 
 const movingShape = () => {
-  if (!store.getShapeSelected()) return;
+  const shapeSelected = store.getShapeSelected();
+  if (!shapeSelected) return;
 
   const { x: cx, y: cy } = store.getCanvasCursorCoordinates();
-  const shapeSelected = store.getShapeSelected();
-  const shapeType = store.getShapeSelected().constructor.name;
+  const shapeType = shapeSelected.type;
+  console.log(shapeSelected);
 
-  if (shapeType === Rectangle || shapeType === Circle) {
+  if (shapeType === RECTANGLE || shapeType === CIRCLE) {
     const newX = cx - dragOffsetX;
     const newY = cy - dragOffsetY;
     shapeSelected.x = newX;
     shapeSelected.y = newY;
   }
 
-  if (shapeType === Line || shapeType === Arrow) {
+  if (shapeType === LINE || shapeType === ARROW) {
     const newX1 = cx - dragOffsetX1;
     const newY1 = cy - dragOffsetY1;
     const newX2 = cx - dragOffsetX2;
@@ -144,12 +137,12 @@ const getShapeBelowCursor = () => {
   let shapeBelowCursor = null;
   const { x, y } = store.getCanvasCursorCoordinates();
   store.shapes.forEach((shape) => {
-    const shapeType = shape.constructor.name;
+    const shapeType = shape.type;
     if (
-      (shapeType === Rectangle && insideRectangle(shape, x, y)) ||
-      (shapeType === Circle && insideCircle(shape, x, y)) ||
-      (shapeType === Line && overLine(shape, x, y)) ||
-      (shapeType === Arrow && overLine(shape, x, y))
+      (shapeType === RECTANGLE && insideRectangle(shape, x, y)) ||
+      (shapeType === CIRCLE && insideCircle(shape, x, y)) ||
+      (shapeType === LINE && overLine(shape, x, y)) ||
+      (shapeType === ARROW && overLine(shape, x, y))
     ) {
       shapeBelowCursor = shape;
     }
@@ -163,12 +156,12 @@ const handleCanvasMouseDown = () => {
 
   if (shapeSelected) {
     store.setShapeSelected(shapeSelected);
-    const shapeType = shapeSelected.constructor.name;
-    if (shapeType === Rectangle || shapeType === Circle) {
+    const shapeType = shapeSelected.type;
+    if (shapeType === RECTANGLE || shapeType === CIRCLE) {
       dragOffsetX = cx - shapeSelected.x;
       dragOffsetY = cy - shapeSelected.y;
     }
-    if (shapeType === Line || shapeType === Arrow) {
+    if (shapeType === LINE || shapeType === ARROW) {
       dragOffsetX1 = cx - shapeSelected.x1;
       dragOffsetY1 = cy - shapeSelected.y1;
 

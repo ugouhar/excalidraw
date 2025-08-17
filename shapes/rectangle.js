@@ -1,3 +1,5 @@
+import { RECTANGLE } from "../constants.js";
+
 export class Rectangle {
   static count = 0;
   constructor(x, y, w, h) {
@@ -5,6 +7,7 @@ export class Rectangle {
     this.y = y;
     this.w = w;
     this.h = h;
+    this.type = RECTANGLE;
     this.id = `rectangle_${Rectangle.count++}`;
   }
 

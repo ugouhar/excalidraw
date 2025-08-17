@@ -35,6 +35,7 @@ export class Store {
   getCanvasCursorCoordinates = () => this.canvas.cursorCoordinates;
   getBrushSize = () => this.canvas.brushSize;
   getShapeSelected = () => this.shapeSelected;
+  getShapeSelectedToDraw = () => this.shapeSelectedToDraw;
 
   setIsSelectToolEnabled = (isEnabled) =>
     (this.tools.isSelectToolEnabled = isEnabled);

@@ -1,9 +1,12 @@
+import { CIRCLE } from "../constants.js";
+
 export class Circle {
   static count = 0;
   constructor(x, y, radius) {
     this.x = x;
     this.y = y;
     this.radius = radius;
+    this.type = CIRCLE;
     this.id = `circle${Circle.count++}`;
   }
 

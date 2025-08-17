@@ -1,3 +1,5 @@
+import { LINE } from "../constants.js";
+
 export class Line {
   static count = 0;
   constructor(x1, y1, x2, y2) {
@@ -5,6 +7,7 @@ export class Line {
     this.y1 = y1;
     this.x2 = x2;
     this.y2 = y2;
+    this.type = LINE;
     this.id = `line${Line.count++}`;
   }
 

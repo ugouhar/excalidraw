@@ -1,3 +1,5 @@
+import { ARROW } from "../constants.js";
+
 export class Arrow {
   static count = 0;
   constructor(x1, y1, x2, y2) {
@@ -5,6 +7,7 @@ export class Arrow {
     this.y1 = y1;
     this.x2 = x2;
     this.y2 = y2;
+    this.type = ARROW;
     this.id = `line${Arrow.count++}`;
   }
 
