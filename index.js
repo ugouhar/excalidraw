@@ -29,17 +29,20 @@ import { MoveShapeCommand } from "./commands/move-shape.js";
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
 const ctx = canvas.getContext("2d");
-ctx.lineWidth = store.getBrushSize();
 let shapeBeingDrawn = null;
-let dragOffsetX = 0,
-  dragOffsetY = 0;
-let dragOffsetX1 = 0,
-  dragOffsetY1 = 0;
-let dragOffsetX2 = 0,
-  dragOffsetY2 = 0;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let dragOffsetX1 = 0;
+let dragOffsetY1 = 0;
+let dragOffsetX2 = 0;
+let dragOffsetY2 = 0;
 let didShapeJustStartMoving = true;
 
-const clearCanvasAndRedrawAllShapes = () => {
+const setBrushSize = () => {
+  ctx.lineWidth = store.getBrushSize();
+};
+
+const redrawCanvas = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   store.shapes.forEach((shape) => shape.draw(ctx));
 };
@@ -77,7 +80,7 @@ const drawingShape = () => {
       console.log("Unknown shape");
   }
 
-  clearCanvasAndRedrawAllShapes();
+  redrawCanvas();
   if (shapeBeingDrawn) shapeBeingDrawn.draw(ctx);
 };
 
@@ -119,7 +122,7 @@ const movingShape = () => {
     shapeSelected.y2 = newY2;
   }
 
-  clearCanvasAndRedrawAllShapes();
+  redrawCanvas();
 };
 
 const endMoving = () => {
@@ -129,12 +132,12 @@ const endMoving = () => {
 
 const undo = () => {
   manager.undo();
-  clearCanvasAndRedrawAllShapes();
+  redrawCanvas();
 };
 
 const redo = () => {
   manager.redo();
-  clearCanvasAndRedrawAllShapes();
+  redrawCanvas();
 };
 
 const getShapeBelowCursor = () => {
@@ -198,7 +201,7 @@ const handleCanvasMouseMove = (event) => {
   }
 };
 
-registerPageLoadEvent(computeCanvasPosition);
+registerPageLoadEvent(computeCanvasPosition, setBrushSize);
 registerCanvasEvents(
   canvas,
   beginDrawing,

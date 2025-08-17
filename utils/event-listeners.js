@@ -1,8 +1,9 @@
 import { ARROW, CIRCLE, LINE, PENCIL, RECTANGLE, TEXT } from "../constants.js";
 import { store } from "../store.js";
 
-export const registerPageLoadEvent = (computeCanvasPosition) => {
+export const registerPageLoadEvent = (computeCanvasPosition, setBrushSize) => {
   window.addEventListener("load", computeCanvasPosition);
+  setBrushSize();
 };
 
 export const registerCanvasEvents = (
