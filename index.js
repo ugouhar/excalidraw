@@ -9,7 +9,7 @@ import {
   drawLine,
   drawRectangle,
 } from "./shapes/draw.js";
-import { insideCircle, insideRectangle, overLine } from "./utils/utils.js";
+import { areCursorCoordinatesInsideShape } from "./utils/utils.js";
 import {
   registerCanvasEvents,
   registerPageLoadEvent,
@@ -94,25 +94,17 @@ const movingShape = () => {
 
   const { x: cx, y: cy } = store.getCanvasCursorCoordinates();
   const shapeType = shapeSelected.type;
-  console.log(shapeSelected);
 
   if (shapeType === RECTANGLE || shapeType === CIRCLE) {
-    const newX = cx - dragOffsetX;
-    const newY = cy - dragOffsetY;
-    shapeSelected.x = newX;
-    shapeSelected.y = newY;
+    shapeSelected.x = cx - dragOffsetX;
+    shapeSelected.y = cy - dragOffsetY;
   }
 
   if (shapeType === LINE || shapeType === ARROW) {
-    const newX1 = cx - dragOffsetX1;
-    const newY1 = cy - dragOffsetY1;
-    const newX2 = cx - dragOffsetX2;
-    const newY2 = cy - dragOffsetY2;
-
-    shapeSelected.x1 = newX1;
-    shapeSelected.y1 = newY1;
-    shapeSelected.x2 = newX2;
-    shapeSelected.y2 = newY2;
+    shapeSelected.x1 = cx - dragOffsetX1;
+    shapeSelected.y1 = cy - dragOffsetY1;
+    shapeSelected.x2 = cx - dragOffsetX2;
+    shapeSelected.y2 = cy - dragOffsetY2;
   }
 
   redrawCanvas();
@@ -135,15 +127,8 @@ const redo = () => {
 
 const getShapeBelowCursor = () => {
   let shapeBelowCursor = null;
-  const { x, y } = store.getCanvasCursorCoordinates();
   store.shapes.forEach((shape) => {
-    const shapeType = shape.type;
-    if (
-      (shapeType === RECTANGLE && insideRectangle(shape, x, y)) ||
-      (shapeType === CIRCLE && insideCircle(shape, x, y)) ||
-      (shapeType === LINE && overLine(shape, x, y)) ||
-      (shapeType === ARROW && overLine(shape, x, y))
-    ) {
+    if (areCursorCoordinatesInsideShape(shape)) {
       shapeBelowCursor = shape;
     }
   });
