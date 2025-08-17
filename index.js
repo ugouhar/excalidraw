@@ -212,3 +212,6 @@ registerCanvasEvents(
   handleCanvasMouseMove
 );
 registerToolsEvents(canvas, undo, redo);
+
+// move utilities to utils
+// move dragoffsets to store

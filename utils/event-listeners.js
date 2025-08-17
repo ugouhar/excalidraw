@@ -33,6 +33,7 @@ export const registerCanvasEvents = (
 };
 
 const switchActiveTool = (canvas, toolType, toolName) => {
+  const shadowRoot = document.getElementById("toolbar").shadowRoot;
   store.setIsSelectToolEnabled(toolType === "select-tool");
   store.setIsMoveToolEnabled(toolType === "move-tool");
   store.setIsDrawingToolEnabled(toolType === "drawing-tool");
@@ -51,48 +52,50 @@ const switchActiveTool = (canvas, toolType, toolName) => {
   ];
 
   allTools.forEach((tool) =>
-    document.getElementById(tool).classList.remove("active-tool")
+    shadowRoot.getElementById(tool).classList.remove("active-tool")
   );
-  document.getElementById(toolName).classList.add("active-tool");
+
+  shadowRoot.getElementById(toolName).classList.add("active-tool");
 };
 
 export const registerToolsEvents = (canvas, undo, redo) => {
-  document.getElementById("select-tool").addEventListener("click", () => {
+  const shadowRoot = document.getElementById("toolbar").shadowRoot;
+  shadowRoot.getElementById("select-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "select-tool", "select-tool");
   });
 
-  document.getElementById("rectangle-tool").addEventListener("click", () => {
+  shadowRoot.getElementById("rectangle-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool", "rectangle-tool");
     store.setShapeSelectedToDraw(RECTANGLE);
   });
 
-  document.getElementById("circle-tool").addEventListener("click", () => {
+  shadowRoot.getElementById("circle-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool", "circle-tool");
     store.setShapeSelectedToDraw(CIRCLE);
   });
 
-  document.getElementById("arrow-tool").addEventListener("click", () => {
+  shadowRoot.getElementById("arrow-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool", "arrow-tool");
     store.setShapeSelectedToDraw(ARROW);
   });
 
-  document.getElementById("line-tool").addEventListener("click", () => {
+  shadowRoot.getElementById("line-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool", "line-tool");
     store.setShapeSelectedToDraw(LINE);
   });
 
-  document.getElementById("pencil-tool").addEventListener("click", () => {
+  shadowRoot.getElementById("pencil-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool", "pencil-tool");
     store.setShapeSelectedToDraw(PENCIL);
   });
 
-  document.getElementById("text-tool").addEventListener("click", () => {
+  shadowRoot.getElementById("text-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool", "text-tool");
     store.setShapeSelectedToDraw(TEXT);
   });
 
-  document.getElementById("undo-tool").addEventListener("click", undo);
-  document.getElementById("redo-tool").addEventListener("click", redo);
+  shadowRoot.getElementById("undo-tool").addEventListener("click", undo);
+  shadowRoot.getElementById("redo-tool").addEventListener("click", redo);
 };
 
 // REFACTOR THIS FILE

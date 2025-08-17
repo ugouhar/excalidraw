@@ -12,19 +12,10 @@
   </head>
   <body>
     <div class="app">
-      <div id="toolbar">
-        <i class="fa-solid fa-arrow-pointer" id="select-tool"></i>
-        <i class="fa-regular fa-square" id="rectangle-tool"></i>
-        <i class="fa-regular fa-circle" id="circle-tool"></i>
-        <i class="fa-solid fa-arrow-right" id="arrow-tool"></i>
-        <i class="fa-solid fa-minus" id="line-tool"></i>
-        <i class="fa-solid fa-pencil" id="pencil-tool"></i>
-        <i class="fa-solid fa-font" id="text-tool"></i>
-        <i class="fa-solid fa-rotate-left" id="undo-tool"></i>
-        <i class="fa-solid fa-rotate-right" id="redo-tool"></i>
-      </div>
+      <app-toolbar id="toolbar"></app-toolbar>
       <canvas id="canvas" width="2000" height="2000"></canvas>
     </div>
     <script src="./index.js" type="module"></script>
+    <script src="./components/toolbar.js"></script>
   </body>
 </html>
