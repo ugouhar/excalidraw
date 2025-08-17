@@ -1,5 +1,6 @@
 import { ARROW, CIRCLE, LINE, PENCIL, RECTANGLE, TEXT } from "../constants.js";
 import { store } from "../store.js";
+import { Drawing } from "./drawing.js";
 
 export const registerPageLoadEvent = (computeCanvasPosition, setBrushSize) => {
   window.addEventListener("load", computeCanvasPosition);
@@ -8,8 +9,6 @@ export const registerPageLoadEvent = (computeCanvasPosition, setBrushSize) => {
 
 export const registerCanvasEvents = (
   canvas,
-  beginDrawing,
-  endDrawing,
   endMoving,
   handleCanvasMouseDown,
   handleCanvasMouseMove
@@ -17,7 +16,7 @@ export const registerCanvasEvents = (
   // MOUSE DOWN
   canvas.addEventListener("mousedown", () => {
     store.setIsMouseDown(true);
-    if (store.getTools().isDrawingToolEnabled) beginDrawing();
+    if (store.getTools().isDrawingToolEnabled) Drawing.beginDrawing();
     if (!store.getTools().isDrawingToolEnabled) handleCanvasMouseDown();
   });
 
@@ -27,7 +26,7 @@ export const registerCanvasEvents = (
   // MOUSE UP
   canvas.addEventListener("mouseup", () => {
     store.setIsMouseDown(false);
-    if (store.getTools().isDrawingToolEnabled) endDrawing();
+    if (store.getTools().isDrawingToolEnabled) Drawing.endDrawing();
     if (store.getTools().isMoveToolEnabled) endMoving();
   });
 };

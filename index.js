@@ -1,14 +1,6 @@
-import { AddShapeCommand } from "./commands/add-shape.js";
 import { CommandManager } from "./commands/command-manager.js";
 import { store } from "./store.js";
 import { ARROW, CIRCLE, LINE, RECTANGLE } from "./constants.js";
-import {
-  computeStartingCoordinatesForDrawing,
-  drawArrow,
-  drawCircle,
-  drawLine,
-  drawRectangle,
-} from "./shapes/draw.js";
 import { areCursorCoordinatesInsideShape } from "./utils/utils.js";
 import {
   registerCanvasEvents,
@@ -16,11 +8,11 @@ import {
   registerToolsEvents,
 } from "./utils/event-listeners.js";
 import { MoveShapeCommand } from "./commands/move-shape.js";
+import { Drawing } from "./utils/drawing.js";
 
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
 const ctx = canvas.getContext("2d");
-let shapeBeingDrawn = null;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 let dragOffsetX1 = 0;
@@ -42,45 +34,6 @@ const computeCanvasPosition = () => {
   const canvasComputedStyle = canvas.getBoundingClientRect();
   const { x, y } = canvasComputedStyle;
   store.setCanvasCoordinates({ x, y });
-};
-
-const beginDrawing = () => {
-  if (store.getControls().isCursorAtDrawingStartPoint) {
-    computeStartingCoordinatesForDrawing();
-    store.setIsCursorAtDrawingStartPoint(false);
-  }
-};
-
-const drawShape = () => {
-  switch (store.getShapeSelectedToDraw()) {
-    case RECTANGLE:
-      shapeBeingDrawn = drawRectangle();
-      break;
-    case CIRCLE:
-      shapeBeingDrawn = drawCircle();
-      break;
-
-    case LINE:
-      shapeBeingDrawn = drawLine();
-      break;
-
-    case ARROW:
-      shapeBeingDrawn = drawArrow();
-      break;
-
-    default:
-      console.log("Unknown shape");
-  }
-
-  redrawCanvas();
-  if (shapeBeingDrawn) shapeBeingDrawn.draw(ctx);
-};
-
-const endDrawing = () => {
-  store.setIsCursorAtDrawingStartPoint(true);
-  if (shapeBeingDrawn) {
-    manager.executeCommand(new AddShapeCommand(store, shapeBeingDrawn));
-  }
 };
 
 const beginMoving = () => {
@@ -157,11 +110,6 @@ const setDragOffsets = () => {
   }
 };
 
-const handleCanvasMouseDown = () => {
-  store.setShapeSelected(getShapeBelowCursor());
-  setDragOffsets();
-};
-
 const checkCanEnableMoveCursorIcon = () => {
   if (store.getTools().isSelectToolEnabled && getShapeBelowCursor()) {
     store.setIsMoveToolEnabled(true);
@@ -174,7 +122,7 @@ const checkCanEnableMoveCursorIcon = () => {
 
 const checkCanDraw = () => {
   if (store.getControls().isMouseDown && store.getTools().isDrawingToolEnabled)
-    drawShape();
+    Drawing.drawShape(canvas);
 };
 
 const checkCanMoveShape = () => {
@@ -195,6 +143,11 @@ const updateCanvasCursorCoordinates = (event) => {
   });
 };
 
+const handleCanvasMouseDown = () => {
+  store.setShapeSelected(getShapeBelowCursor());
+  setDragOffsets();
+};
+
 const handleCanvasMouseMove = (event) => {
   updateCanvasCursorCoordinates(event);
   checkCanEnableMoveCursorIcon();
@@ -205,8 +158,6 @@ const handleCanvasMouseMove = (event) => {
 registerPageLoadEvent(computeCanvasPosition, setBrushSize);
 registerCanvasEvents(
   canvas,
-  beginDrawing,
-  endDrawing,
   endMoving,
   handleCanvasMouseDown,
   handleCanvasMouseMove

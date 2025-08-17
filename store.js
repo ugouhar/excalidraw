@@ -24,10 +24,14 @@ export class Store {
     this.shapeSelectedToDraw = null;
     this.shapeSelected = null;
   }
+
   getState = () => ({
+    tools: this.tools,
     controls: this.controls,
     canvas: this.canvas,
     shapes: this.shapes,
+    shapeSelectedToDraw: this.shapeSelectedToDraw,
+    shapeSelected: this.shapeSelected,
   });
   getTools = () => this.tools;
   getControls = () => this.controls;
@@ -39,13 +43,10 @@ export class Store {
 
   setIsSelectToolEnabled = (isEnabled) =>
     (this.tools.isSelectToolEnabled = isEnabled);
-
   setIsMoveToolEnabled = (isEnabled) =>
     (this.tools.isMoveToolEnabled = isEnabled);
-
   setIsDrawingToolEnabled = (isEnabled) =>
     (this.tools.isDrawingToolEnabled = isEnabled);
-
   setIsCursorAtDrawingStartPoint = (value) => {
     this.controls.isCursorAtDrawingStartPoint = value;
   };

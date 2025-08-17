@@ -1,5 +1,9 @@
 export class CommandManager {
   constructor() {
+    if (CommandManager.instance) {
+      return CommandManager.instance;
+    }
+    CommandManager.instance = this;
     this.undoStack = [];
     this.redoStack = [];
   }
