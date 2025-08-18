@@ -13,12 +13,14 @@ import { Drawing } from "./utils/drawing.js";
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
 const ctx = canvas.getContext("2d");
-let dragOffsetX = 0;
-let dragOffsetY = 0;
-let dragOffsetX1 = 0;
-let dragOffsetY1 = 0;
-let dragOffsetX2 = 0;
-let dragOffsetY2 = 0;
+const dragOffsets = {
+  x: 0,
+  y: 0,
+  x1: 0,
+  y1: 0,
+  x2: 0,
+  y2: 0,
+};
 let isShapeAboutToMove = true;
 
 const setBrushSize = () => {
@@ -49,15 +51,15 @@ const moveShape = () => {
   const shapeType = shapeSelected.type;
 
   if (shapeType === RECTANGLE || shapeType === CIRCLE) {
-    shapeSelected.x = cx - dragOffsetX;
-    shapeSelected.y = cy - dragOffsetY;
+    shapeSelected.x = cx - dragOffsets.x;
+    shapeSelected.y = cy - dragOffsets.y;
   }
 
   if (shapeType === LINE || shapeType === ARROW) {
-    shapeSelected.x1 = cx - dragOffsetX1;
-    shapeSelected.y1 = cy - dragOffsetY1;
-    shapeSelected.x2 = cx - dragOffsetX2;
-    shapeSelected.y2 = cy - dragOffsetY2;
+    shapeSelected.x1 = cx - dragOffsets.x1;
+    shapeSelected.y1 = cy - dragOffsets.y1;
+    shapeSelected.x2 = cx - dragOffsets.x2;
+    shapeSelected.y2 = cy - dragOffsets.y2;
   }
 
   redrawCanvas();
@@ -97,16 +99,16 @@ const setDragOffsets = () => {
   const shapeType = shapeSelected.type;
 
   if (shapeType === RECTANGLE || shapeType === CIRCLE) {
-    dragOffsetX = cx - shapeSelected.x;
-    dragOffsetY = cy - shapeSelected.y;
+    dragOffsets.x = cx - shapeSelected.x;
+    dragOffsets.y = cy - shapeSelected.y;
   }
 
   if (shapeType === LINE || shapeType === ARROW) {
-    dragOffsetX1 = cx - shapeSelected.x1;
-    dragOffsetY1 = cy - shapeSelected.y1;
+    dragOffsets.x1 = cx - shapeSelected.x1;
+    dragOffsets.y1 = cy - shapeSelected.y1;
 
-    dragOffsetX2 = cx - shapeSelected.x2;
-    dragOffsetY2 = cy - shapeSelected.y2;
+    dragOffsets.x2 = cx - shapeSelected.x2;
+    dragOffsets.y2 = cy - shapeSelected.y2;
   }
 };
 
