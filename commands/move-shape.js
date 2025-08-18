@@ -6,6 +6,7 @@ export class MoveShapeCommand {
   constructor(store, shape) {
     this.store = store;
     this.shape = shape;
+    this.shapeType = shape.type;
   }
 
   execute() {
@@ -13,8 +14,7 @@ export class MoveShapeCommand {
     const top =
       N > 0 ? MoveShapeCommand.undoStack[N - 1] : { id: "", x: "", y: "" };
 
-    const shapeType = this.shape.type;
-    if (shapeType === RECTANGLE || shapeType === CIRCLE) {
+    if (this.shapeType === RECTANGLE || this.shapeType === CIRCLE) {
       if (
         top.id === this.shape.id &&
         top.x === this.shape.x &&
@@ -24,7 +24,7 @@ export class MoveShapeCommand {
       }
     }
 
-    if (shapeType === LINE || shapeType === ARROW) {
+    if (this.shapeType === LINE || this.shapeType === ARROW) {
       if (
         top.id === this.shape.id &&
         top.x1 === this.shape.x1 &&
@@ -36,8 +36,7 @@ export class MoveShapeCommand {
       }
     }
 
-    console.log("shapeType", shapeType);
-    if (shapeType === RECTANGLE || shapeType === CIRCLE) {
+    if (this.shapeType === RECTANGLE || this.shapeType === CIRCLE) {
       MoveShapeCommand.undoStack.push({
         id: this.shape.id,
         x: this.shape.x,
@@ -45,7 +44,7 @@ export class MoveShapeCommand {
       });
     }
 
-    if (shapeType === LINE || shapeType === ARROW) {
+    if (this.shapeType === LINE || this.shapeType === ARROW) {
       MoveShapeCommand.undoStack.push({
         id: this.shape.id,
         x1: this.shape.x1,
@@ -55,14 +54,13 @@ export class MoveShapeCommand {
       });
     }
 
-    console.log(MoveShapeCommand.undoStack);
     MoveShapeCommand.redoStack = [];
   }
 
   undo() {
     if (MoveShapeCommand.undoStack.length === 0) return;
-    const shapeType = this.shape.type;
-    if (shapeType === RECTANGLE || shapeType === CIRCLE) {
+
+    if (this.shapeType === RECTANGLE || this.shapeType === CIRCLE) {
       MoveShapeCommand.redoStack.push({
         id: this.shape.id,
         x: this.shape.x,
@@ -78,7 +76,7 @@ export class MoveShapeCommand {
       });
     }
 
-    if (shapeType === LINE || shapeType === ARROW) {
+    if (this.shapeType === LINE || this.shapeType === ARROW) {
       MoveShapeCommand.redoStack.push({
         id: this.shape.id,
         x1: this.shape.x1,
@@ -101,8 +99,8 @@ export class MoveShapeCommand {
 
   redo() {
     if (MoveShapeCommand.redoStack.length === 0) return;
-    const shapeType = this.shape.type;
-    if (shapeType === RECTANGLE || shapeType === CIRCLE) {
+
+    if (this.shapeType === RECTANGLE || this.shapeType === CIRCLE) {
       MoveShapeCommand.undoStack.push({
         id: this.shape.id,
         x: this.shape.x,
@@ -117,7 +115,7 @@ export class MoveShapeCommand {
         }
       });
     }
-    if (shapeType === LINE || shapeType === ARROW) {
+    if (this.shapeType === LINE || this.shapeType === ARROW) {
       MoveShapeCommand.undoStack.push({
         id: this.shape.id,
         x1: this.shape.x1,
@@ -138,3 +136,5 @@ export class MoveShapeCommand {
     }
   }
 }
+
+// individual moveshape commands for each shape
