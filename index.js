@@ -8,6 +8,9 @@ import {
 } from "./utils/event-listeners.js";
 import { Drawing } from "./utils/drawing.js";
 import { MovingShape } from "./utils/movings.js";
+import { AddShapeCommand } from "./commands/add-shape.js";
+import { SelectShape } from "./shapes/selections.js";
+import { CIRCLE, RECTANGLE, SELECTION } from "./constants.js";
 
 const canvas = document.getElementById("canvas");
 const manager = new CommandManager();
@@ -77,14 +80,43 @@ const handleCanvasMouseMove = (event) => {
   MovingShape.checkCanMoveShape(canvas);
 };
 
+const handleCanvasClick = () => {
+  store.shapes = store.shapes.filter((s) => s.type !== SELECTION);
+  const shape = store.getShapeSelected();
+  if (!shape) {
+    Drawing.redrawCanvas(canvas);
+    return;
+  }
+  const shapeType = shape.type;
+  let x, y, w, h;
+  if (shapeType === RECTANGLE) {
+    x = shape.x - 5;
+    y = shape.y - 5;
+    w = shape.w + 10;
+    h = shape.h + 10;
+  } else if (shapeType === CIRCLE) {
+    x = shape.x - shape.radius - 5;
+    y = shape.y - shape.radius - 5;
+    w = shape.radius * 2 + 10;
+    h = shape.radius * 2 + 10;
+  } else {
+    return;
+  }
+  const selection = new SelectShape(x, y, w, h);
+  manager.executeCommand(new AddShapeCommand(store, selection));
+  Drawing.redrawCanvas(canvas);
+};
+
 registerPageLoadEvent(computeCanvasPosition, setBrushSize);
 registerCanvasEvents(
   canvas,
   MovingShape.endMoving,
   handleCanvasMouseDown,
-  handleCanvasMouseMove
+  handleCanvasMouseMove,
+  handleCanvasClick
 );
 registerToolsEvents(canvas, undo, redo);
 
 // move utilities to utils
 // better names than checkCanMoveShape, checkCan..
+// handleCanvasMouseDown only on mousedown

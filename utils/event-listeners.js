@@ -11,7 +11,8 @@ export const registerCanvasEvents = (
   canvas,
   endMoving,
   handleCanvasMouseDown,
-  handleCanvasMouseMove
+  handleCanvasMouseMove,
+  handleCanvasClick
 ) => {
   // MOUSE DOWN
   canvas.addEventListener("mousedown", () => {
@@ -29,6 +30,8 @@ export const registerCanvasEvents = (
     if (store.getTools().isDrawingToolEnabled) Drawing.endDrawing();
     if (store.getTools().isMoveToolEnabled) endMoving();
   });
+
+  canvas.addEventListener("click", handleCanvasClick);
 };
 
 const switchActiveTool = (canvas, toolType, toolName) => {
