@@ -78,12 +78,7 @@ const handleCanvasMouseMove = (event) => {
 };
 
 registerPageLoadEvent(computeCanvasPosition, setBrushSize);
-registerCanvasEvents(
-  canvas,
-  MovingShape.endMoving,
-  handleCanvasMouseDown,
-  handleCanvasMouseMove
-);
+registerCanvasEvents(canvas, handleCanvasMouseDown, handleCanvasMouseMove);
 registerToolsEvents(canvas, undo, redo);
 
 // move utilities to utils
