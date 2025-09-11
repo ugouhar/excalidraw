@@ -1,13 +1,15 @@
 import { AddShapeCommand } from "../commands/add-shape.js";
 import { CommandManager } from "../commands/command-manager.js";
-import { ARROW, CIRCLE, LINE, RECTANGLE } from "../constants.js";
+import { ARROW, CIRCLE, LINE, FREEHAND, RECTANGLE } from "../constants.js";
 import {
   computeStartingCoordinatesForDrawing,
   drawArrow,
   drawCircle,
   drawLine,
+  drawFreehand,
   drawRectangle,
 } from "../shapes/draw.js";
+import { Freehand } from "../shapes/freehand.js";
 import { store } from "../store.js";
 
 const manager = new CommandManager();
@@ -45,6 +47,10 @@ export class Drawing {
         shapeBeingDrawn = drawArrow();
         break;
 
+      case FREEHAND:
+        shapeBeingDrawn = drawFreehand();
+        break;
+
       default:
         console.log("Unknown shape");
     }
@@ -54,7 +60,13 @@ export class Drawing {
   };
 
   static endDrawing = () => {
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
     store.setIsCursorAtDrawingStartPoint(true);
+    if (store.getShapeSelectedToDraw() === FREEHAND) {
+      shapeBeingDrawn = new Freehand(ctx);
+    }
+
     if (shapeBeingDrawn) {
       manager.executeCommand(new AddShapeCommand(store, shapeBeingDrawn));
     }

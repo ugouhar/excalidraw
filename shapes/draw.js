@@ -2,6 +2,7 @@ import { store } from "../store.js";
 import { Arrow } from "./arrow.js";
 import { Circle } from "./circle.js";
 import { Line } from "./line.js";
+import { FreehandView } from "./freehand.js";
 import { Rectangle } from "./rectangle.js";
 
 let startX, startY;
@@ -32,4 +33,10 @@ export const drawArrow = () => {
   const x2 = store.getCanvasCursorCoordinates().x;
   const y2 = store.getCanvasCursorCoordinates().y;
   return new Arrow(startX, startY, x2, y2);
+};
+
+export const drawFreehand = () => {
+  const x = store.getCanvasCursorCoordinates().x;
+  const y = store.getCanvasCursorCoordinates().y;
+  return new FreehandView(x, y, 10);
 };

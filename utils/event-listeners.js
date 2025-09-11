@@ -1,4 +1,11 @@
-import { ARROW, CIRCLE, LINE, PENCIL, RECTANGLE, TEXT } from "../constants.js";
+import {
+  ARROW,
+  CIRCLE,
+  FREEHAND,
+  LINE,
+  RECTANGLE,
+  TEXT,
+} from "../constants.js";
 import { store } from "../store.js";
 import { Drawing } from "./drawing.js";
 import { MovingShape } from "./movings.js";
@@ -85,7 +92,7 @@ export const registerToolsEvents = (canvas, undo, redo) => {
 
   shadowRoot.getElementById("pencil-tool").addEventListener("click", () => {
     switchActiveTool(canvas, "drawing-tool", "pencil-tool");
-    store.setShapeSelectedToDraw(PENCIL);
+    store.setShapeSelectedToDraw(FREEHAND);
   });
 
   shadowRoot.getElementById("text-tool").addEventListener("click", () => {
