@@ -8,4 +8,11 @@ jobs:
         run: echo "Hello world"
       - name: Print goodbye
         run: echo "Done - bye"
+  second-job:
+    runs-on: macos-latest
+    steps:
+      - name: Print greeting2
+        run: echo "Hello world2"
+      - name: Print goodbye2
+        run: echo "Done2 - bye2"
         
